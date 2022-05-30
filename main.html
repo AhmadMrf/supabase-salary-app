@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <title>Table V01</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" type="text/css" href="./main.css" />
+
+    <meta name="robots" content="noindex, follow" />
+  </head>
+
+  <body>
+    <div class="limiter">
+      <div class="container-table100">
+
+        <div class="form-wrap">
+          <input
+            class="hidden-input"
+            type="radio"
+            name="show-form"
+            id="nurse"
+          />
+          <input
+            class="hidden-input"
+            type="radio"
+            name="show-form"
+            id="add-patient"
+          />
+          <input class="hidden-input" type="radio" name="show-form" id="more" />
+          <input
+            class="hidden-input"
+            type="radio"
+            name="show-form"
+            id="hidden"
+            checked
+          />
+          <div class="form-titles">
+            <label id="login-label" for="nurse"> ورود - ثبت نام</label>
+            <label for="add-patient">افزودن بیمار جدید </label>
+            <label for="more">بیشتر </label>
+            <label for="hidden">x</label>
+          </div>
+
+          <div class="form-content">
+            <div id="login-content" data-form="nurse" class="form-details">
+<!-- 
+              <form action="#">
+                <div class="info">
+                  <input type="email" name="email" placeholder="ایمیل" />
+                  <input type="password" name="password" placeholder="رمز ورود" />
+                  <input class="nurse-data active" type="text" name="fullName" placeholder="نام و نام خانوادگی" />
+                  <input class="nurse-data" type="text" name="job" placeholder="سمت و شغل" />
+
+                </div>
+                <button type="button" href="#">ورود یا ثبت نام</button>
+                <a href="#">فراموشی رمز عبور </a>
+              </form> -->
+
+              <!-- <div class="panel-account">
+                <div class="panel-info">
+                  <span>علی باقری</span>
+                  <span>پرستار</span>
+                  <span>تعداد بیماران : <span id="patient-number" >3</span></span>
+                </div>
+                <button type="button" href="#">خروج</button>
+              </div>-->
+            </div> 
+
+            <div id="add-patient-form" data-form="add-patient" class="form-details">
+              <!-- <form action="#">
+                <div class="info">
+                  <input
+                    class="fname"
+                    type="text"
+                    name="name"
+                    placeholder="نام بیمار"
+                  />
+                  <input type="text" name="name" placeholder="کد ملی" />
+                  <input type="text" name="name" placeholder="شماره تماس" />
+                  <input type="text" name="name" placeholder="آدرس" />
+                </div>
+                <button type="button" href="#">افزودن بیمار جدید</button>
+              </form> -->
+              <!-- <span>ابتدا وارد حساب کاربری خود شوید</span> -->
+              
+            </div>
+
+            <div data-form="more" class="form-details">
+              <!-- <form action="#">
+                <div class="info">
+                  <input
+                    class="fname"
+                    type="text"
+                    name="name"
+                    placeholder="بیشتر"
+                  />
+                  <input type="text" name="name" placeholder="کد ملی" />
+                  <input type="text" name="name" placeholder="شماره تماس" />
+                  <input type="text" name="name" placeholder="آدرس" />
+                </div>
+                <button type="button" href="#">افزودن</button>
+              </form> -->
+              <span>به زودی در دسترس قرار میگیرد</span>
+            </div>
+          </div>
+        </div>
+        <div class="wrap-table100">
+          <div class="table100">
+            <table>
+              
+              <thead>
+                <tr class="table100-head">
+                  <th class="column1">ردیف</th>
+                  <th class="column2">نام بیمار</th>
+                  <th class="column3">تلفن</th>
+                  <th class="column4">مجموع هزینه</th>
+                  <th class="column5">مجموع دریافتی</th>
+                  <th class="column6"></th>
+                </tr>
+              </thead>
+              <tbody>
+              <!-- <tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr> -->
+              <!-- <tr><td class="fake-td" colspan="6">در حال دریافت اطلاعات ...</td></tr> -->
+                 <!-- <tr>
+                  <td class="column1">1</td>
+                  <td class="column2">احمد معروفی</td>
+                  <td class="column3">0936565656</td>
+                  <td class="column4">500</td>
+                  <td class="column5">400</td>
+                  <td class="column6"><button>edit</button></td>
+                </tr> -->
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

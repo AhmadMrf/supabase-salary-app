@@ -1,0 +1,446 @@
+/*//////////////////////////////////////////////////////////////////
+[ RESTYLE TAG ]*/
+@import "./reset.css";
+
+/*//////////////////////////////////////////////////////////////////
+[ Utiliti ]*/
+
+/*//////////////////////////////////////////////////////////////////
+[ Table ]*/
+
+.limiter {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.container-table100 {
+  width: 100%;
+  min-height: 100vh;
+  background: #c850c0;
+  background: -webkit-linear-gradient(45deg, #4158d0, #c850c0);
+  background: -o-linear-gradient(45deg, #4158d0, #c850c0);
+  background: -moz-linear-gradient(45deg, #4158d0, #c850c0);
+  background: linear-gradient(45deg, #4158d0, #c850c0);
+
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 33px 30px;
+  gap: 20px;
+}
+
+.wrap-table100,
+.form-wrap {
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 1170px;
+}
+.form-wrap {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+}
+.form-content{
+  background-color: #fff;
+  width: 100%;
+}
+.form-details {
+  display: none;
+  background-color: #fff;
+  padding: 25px;
+  text-align: center;
+  width: min(100%, 40rem);
+  margin: 0 auto;
+}
+
+
+.hidden-input {
+  display: none;
+}
+#nurse:checked ~ .form-content div[data-form="nurse"] {
+  display: block;
+}
+#nurse:checked ~ .form-titles label[for="nurse"] {
+  background-color: #fff;
+  color: #222;
+}
+#add-patient:checked ~ .form-content div[data-form="add-patient"] {
+  display: block;
+}
+#add-patient:checked ~ .form-titles label[for="add-patient"] {
+  background-color: #fff;
+  color: #222;
+}
+#more:checked ~ .form-content div[data-form="more"] {
+  display: block;
+}
+#more:checked ~ .form-titles label[for="more"] {
+  background-color: #fff;
+  color: #222;
+}
+#hidden:checked ~ .form-titles label {
+  border-radius: 10px;
+}
+
+.form-titles {
+  display: flex;
+  gap: 2px;
+}
+label[for="hidden"] {
+  flex: 0 0 2rem;
+}
+
+table {
+  border-spacing: 1;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+table * {
+  position: relative;
+}
+
+table td,
+table th {
+  padding-left: 8px;
+}
+
+table thead tr {
+  height: 60px;
+  background: #36304a;
+}
+
+table tbody tr {
+  height: 50px;
+}
+
+table tbody tr:last-child {
+  border: 0;
+}
+
+table td,
+table th {
+  text-align: center;
+}
+
+table td.l,
+table th.l {
+  text-align: right;
+}
+
+table td.c,
+table th.c {
+  text-align: center;
+}
+
+table td.r,
+table th.r {
+  text-align: center;
+}
+
+.table100-head th {
+  font-family: OpenSans-Regular;
+  font-size: 18px;
+  color: #fff;
+  line-height: 1.2;
+  font-weight: unset;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #eeeeee;
+}
+
+tbody tr {
+  background-color: #fff;
+  font-family: OpenSans-Regular;
+  font-size: 15px;
+  color: #808080;
+  line-height: 1.2;
+  font-weight: unset;
+}
+
+tbody tr:hover {
+  color: #555555;
+  background-color: rgb(198, 193, 212);
+  cursor: default;
+}
+.column1 {
+  width: 100px;
+}
+
+.column2 {
+  width: 160px;
+}
+
+.column3 {
+  width: 200px;
+}
+
+.column4 {
+  width: 110px;
+}
+
+.column5 {
+  width: 120px;
+}
+
+.column6 {
+  width: 80px;
+}
+
+form {
+  background: #fff;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  padding: 5px;
+  margin-bottom: 30px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #bbb;
+}
+
+input::placeholder {
+  color: #000;
+}
+.nurse-data{
+  display: none;
+}
+.nurse-data.active{
+  display: initial;
+}
+
+button,
+label {
+  padding: 10px 5px;
+  border-radius: 5px;
+  border: none;
+  background: rgba(54, 48, 74, 0.5);
+  color: #fff;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 400;
+  width: 50%;
+}
+label {
+  border-radius: 10px 10px 0 0;
+  text-align: center;
+}
+button:hover {
+  background: rgba(54, 48, 74, 0.8);
+}
+.form-wrap button {
+  background-color: rgb(140, 187, 161);
+}
+.form-wrap button:hover {
+  background-color: rgb(140, 187, 140);
+}
+
+button[slot="signout-btn"]{
+  width: 10rem;
+}
+
+
+.panel-account{
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  justify-content: space-between;
+}
+.panel-info{
+  display: flex;
+  align-items: start;
+  flex-flow: column nowrap;
+  font-size: 14px;
+  gap: 10px;
+  text-align: right;
+}
+.panel-info > span{
+  border-right: 5px solid rgba(54, 48, 74, 0.5);
+  padding-right: 10px;
+}
+
+form {
+  padding: 25px;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  gap: .5rem;
+  background: #fff;
+}
+
+.info {
+  width: min(100%, 40rem);
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  padding: 5px;
+  margin-bottom: 30px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #bbb;
+}
+
+input::placeholder {
+  color: #000;
+}
+
+button {
+  padding: 10px 5px;
+  border-radius: 5px;
+  border: none;
+  background-color: rgb(140, 187, 161);
+  color: #fff;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 400;
+  width: min(80%, 20rem);
+  cursor: pointer;
+}
+ button:hover{
+  background-color: rgb(140, 187, 140);
+}
+a{
+  font-size: .7rem;
+}
+
+
+
+
+@media screen and (max-width: 700px) {
+  table {
+    display: block;
+  }
+
+  table > *,
+  table tr,
+  table td,
+  table th {
+    display: block;
+  }
+
+  table thead {
+    display: none;
+  }
+
+  table tbody tr {
+    height: auto;
+    padding: 37px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2px;
+  }
+
+  table tbody tr:hover {
+    background-color: #e4e4e4;
+  }
+
+  table tbody tr td {
+    padding-right: 40%;
+    margin-bottom: 24px;
+  }
+
+  table tbody tr td:first-child {
+    background-color: #36304a;
+    color: #fff;
+  }
+  table tbody tr td:last-child {
+    margin-bottom: 0;
+    padding: 5px 0;
+  }
+
+  table tbody tr td:before {
+    font-family: OpenSans-Regular;
+    font-size: 14px;
+    color: #999999;
+    line-height: 1.2;
+    font-weight: unset;
+    position: absolute;
+    width: 40%;
+    right: 30px;
+    top: 0;
+  }
+  table tbody tr td:first-child::before {
+    color: #fff;
+  }
+
+  table tbody tr td:nth-child(1):before {
+    content: "ردیف";
+  }
+
+  table tbody tr td:nth-child(2):before {
+    content: "نام بیمار";
+  }
+
+  table tbody tr td:nth-child(3):before {
+    content: "تلفن";
+  }
+
+  table tbody tr td:nth-child(4):before {
+    content: "مجموع هزینه";
+  }
+
+  table tbody tr td:nth-child(5):before {
+    content: "مجکوع دریافتی";
+  }
+
+  table tbody tr td:nth-child(6):before {
+    content: "";
+  }
+
+  table tbody tr td.fake-td {
+    background-color: inherit;
+    color: inherit;
+  }
+  table tbody tr td.fake-td::before {
+    content: "";
+  }
+  .column4,
+  .column5,
+  .column6 {
+    text-align: center;
+  }
+
+  .column4,
+  .column5,
+  .column6,
+  .column1,
+  .column2,
+  .column3 {
+    width: 85%;
+    border-bottom: 1px solid #d2d2d2;
+    padding-bottom: 5px;
+  }
+
+  tbody tr {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .container-table100 {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+
