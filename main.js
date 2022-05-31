@@ -32,14 +32,27 @@ let fullNameValue;
 let jobValue;
 let loginBtn;
 // let isLogin = true;
-let isLogin = await database.auth.user(); // data or null
+// let isLogin = await database.auth.user(); // data or null
 // let activeSession = await database.auth.session()  //data or null
 // let { data: patientData, error } = await database.from('patients')  //data or error
 
-console.log('islogin',isLogin);
-setUpApp(isLogin);
+
+// console.log('islogin',isLogin());
+setUpApp(isLogin());
 // loginForm = loginContent.querySelector('form')
 console.log(login_logout_btn);
+
+
+function isLogin() {
+  console.log('is login');
+  let localUser = JSON.parse(localStorage.getItem('supabase.auth.token'))
+  if (localUser) {
+    let { currentSession: { user } } = localUser
+    return user
+  } else {
+    return localUser
+  }
+}
 
 // if sign in retun user info
 // if error return  error obj (error: Object { message: "Invalid login credentials", status: 400 })
@@ -71,17 +84,16 @@ async function signUpAccount() {
   jobValue = loginForm.elements.job;
 
   const { user, session, error } = await database.auth.signUp(
-    {
-      email: "me1@email.com",
-      password: "123456",
+  {
+    email: "me1@email.com",
+    password: "123456",
+  },
+  {
+    data: {
+      fullName: "علی باقری",
+      job: "پرستار",
     },
-    {
-      data: {
-        fullName: "علی باقری",
-        job: "پرستار",
-      },
-    }
-  );
+  });
 }
 
 async function signOutAccount() {
@@ -90,29 +102,29 @@ async function signOutAccount() {
   return await database.auth.signOut(activeSession.access_token);
 }
 
-async function setUpApp(loginStat,patients=[]) {
+async function setUpApp(loginStat, patients = []) {
   console.log("setup");
 
   // let {data:patientsData, error} = loginStat ? await database.from('patients') : [] ;
   // let patientsData = loginStat ? await getPatientsData(loginStat.id) : [] ;
   console.log(patients);
 
-  loginLabel.textContent = loginStat
-    ? `درمانگر : ${loginStat.user_metadata.fullName}`
-    : "ورود - ثبت نام";
+  loginLabel.textContent = loginStat ?
+    `درمانگر : ${loginStat.user_metadata.fullName}` :
+    "ورود - ثبت نام";
 
-  loginContent.innerHTML = loginStat
-    ? `
+  loginContent.innerHTML = loginStat ?
+    `
       <div class="panel-account">
         <div class="panel-info">
           <span>${loginStat.user_metadata.fullName}</span>
           <span>${loginStat.user_metadata.job}</span>
-          <span>تعداد بیماران : <span id="patient-number" >${patientsData.length}</span></span>
+          <span>تعداد بیماران : <span id="patient-number" >${patients.length}</span></span>
         </div>
         <button type="button" href="#">خروج</button>
       </div>
-  `
-    : `
+  ` :
+    `
       <form action="#">
         <div class="info">
           <input type="email" name="email" placeholder="ایمیل" />
@@ -128,8 +140,8 @@ async function setUpApp(loginStat,patients=[]) {
   loginForm = loginContent.querySelector("form");
   login_logout_btn = loginContent.querySelector("button");
 
-  addPatient.innerHTML = loginStat
-    ? `
+  addPatient.innerHTML = loginStat ?
+    `
       <form action="#">
         <div class="info">
           <input class="fname" type="text" name="name" placeholder="نام بیمار"/>
@@ -139,11 +151,11 @@ async function setUpApp(loginStat,patients=[]) {
         </div>
         <button href="#">افزودن بیمار جدید</button>
       </form>
-  `
-    : "<span>ابتدا وارد حساب کاربری خود شوید</span>";
+  ` :
+    "<span>ابتدا وارد حساب کاربری خود شوید</span>";
 
-  tbody.innerHTML = loginStat
-    ? `
+  tbody.innerHTML = loginStat ?
+    `
       <tr>
         <td class="column1">1</td>
         <td class="column2">احمد معروفی</td>
@@ -152,8 +164,8 @@ async function setUpApp(loginStat,patients=[]) {
         <td class="column5">400</td>
         <td class="column6"><button>edit</button></td>
       </tr>
-`
-    : '<tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr>';
+` :
+    '<tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr>';
 }
 
 function errorManage(errorMassage) {
@@ -162,19 +174,17 @@ function errorManage(errorMassage) {
 }
 
 
-async function getPatientsData(id){
-console.log("get");
- let {data, error} = await database.from('patients')
- return data ? data:error ;
+async function getPatientsData(id) {
+  console.log("get");
+  let { data, error } = await database.from('patients')
+  return data ? data : error;
 
 }
 
 
 // console.log(login_logout_btn);
-
-login_logout_btn.addEventListener("click", async () => {
-
-  if (isLogin) {
+login_logout_btn.addEventListener('click', () => {
+  if (isLogin()) {
     // sign out btn active
     let { error } = await signOutAccount();
     if (error) {
@@ -211,8 +221,8 @@ login_logout_btn.addEventListener("click", async () => {
 // console.log(session);
 // console.log(c);
 
-  // let g = await database.from('4patients')
-  // console.log(g);
+// let g = await database.from('4patients')
+// console.log(g);
 // let tr
 // let trs = data.map( (el, i) => {
 //   return tr = `<tr>
