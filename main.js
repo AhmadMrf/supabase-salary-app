@@ -18,7 +18,7 @@ let fullNameValue;
 let jobValue;
 let loginBtn;
 
-setUpApp(isLogin());
+setupApp(isLogin());
 
 //check localstorage for an active user
 // if user exist return user
@@ -106,7 +106,7 @@ async function getPatientsData(id) {
   return data;
 }
 
-// change betwean sign in and sign out and call setUpApp again
+// change betwean sign in and sign out and call setupApp again
 async function changeSignState() {
   console.log("click btn");
 
@@ -117,29 +117,29 @@ async function changeSignState() {
       console.log("has error", error);
     } else {
       console.log("no error", error);
-      setUpApp(error);
+      setupApp(error);
     }
   } else {
     //sign in btn active
     let userData = await signInAccount();
     if (userData) {
-      setUpApp(userData);
+      setupApp(userData);
     } else {
       console.log(userData, " خطا");
     }
   }
 }
 
-async function setUpApp(loginState) {
-  console.log("setup");
-  let patients = loginState ? await getPatientsData(loginState.id) : [];
 
-  console.log(patients);
-
+function setLoginLabel(loginState){
   loginLabel.textContent = loginState
-    ? `درمانگر : ${loginState.user_metadata.fullName}`
-    : "ورود - ثبت نام";
+  ? `درمانگر : ${loginState.user_metadata.fullName}`
+  : "ورود - ثبت نام";
 
+}
+
+
+function setLoginContent(loginState,patients){
   loginContent.innerHTML = loginState
     ? `
       <div class="panel-account">
@@ -165,25 +165,14 @@ async function setUpApp(loginState) {
         <a href="#">فراموشی رمز عبور </a>
       </form>
   `;
-
   loginForm = loginContent.querySelector("form");
   login_logout_btn = loginContent.querySelector("button");
-  login_logout_btn.addEventListener("click", changeSignState);
+  return {loginForm,login_logout_btn}
 
-  addPatient.innerHTML = loginState
-    ? `
-      <form action="#">
-        <div class="info">
-          <input class="fname" type="text" name="name" placeholder="نام بیمار"/>
-          <input type="text" name="name" placeholder="کد ملی" />
-          <input type="text" name="name" placeholder="شماره تماس" />
-          <input type="text" name="name" placeholder="آدرس" />
-        </div>
-        <button href="#">افزودن بیمار جدید</button>
-      </form>
-  `
-    : "<span>ابتدا وارد حساب کاربری خود شوید</span>";
+}
 
+
+function setTableContent(loginState,patients){
   if (loginState) {
     if (!patients) {
       tbody.innerHTML =
@@ -192,7 +181,7 @@ async function setUpApp(loginState) {
       <td class="fake-td" colspan="2"><button id="refreshBtn" >مجدد تلاش کنید</button></td>
       </tr>`
       ;
-      document.querySelector('#refreshBtn').addEventListener('click', ()=>setUpApp(isLogin()))
+      document.querySelector('#refreshBtn').addEventListener('click', ()=>setupApp(isLogin()))
     } else {
       tbody.innerHTML = patients
         .map((patient, i) => {
@@ -210,20 +199,44 @@ async function setUpApp(loginState) {
   } else {
     tbody.innerHTML =
       '<tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr>';
-  }
-  // tbody.innerHTML = loginState ?
-  //   patientesTable  = patients.map( (patient, i) => {
-  //     return patient = `<tr>
-  //     <td class="column1">${+i+1}</td>
-  //     <td class="column2">${patient.fullName}</td>
-  //     <td class="column3">${patient.telNum}</td>
-  //     <td class="column4">${patient.visit + patient.equip}</td>
-  //     <td class="column5">${patient.income}</td>
-  //     <td class="column6"><button>edit</button></td>
-  //     </tr>`
-  //   }).join('')
-  // :
-  //   '<tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr>';
+}
+}
+
+
+function setAddPatient(loginState){
+  addPatient.innerHTML = loginState
+    ? `
+      <form action="#">
+        <div class="info">
+          <input class="fname" type="text" name="name" placeholder="نام بیمار"/>
+          <input type="text" name="name" placeholder="کد ملی" />
+          <input type="text" name="name" placeholder="شماره تماس" />
+          <input type="text" name="name" placeholder="آدرس" />
+        </div>
+        <button href="#">افزودن بیمار جدید</button>
+      </form>
+  `
+    : "<span>ابتدا وارد حساب کاربری خود شوید</span>";
+}
+
+
+async function setupApp(loginState) {
+  console.log("setup");
+  let patients = loginState ? await getPatientsData(loginState.id) : [];
+
+  console.log(patients);
+
+  setLoginLabel(loginState)
+
+  let {loginForm, login_logout_btn} = setLoginContent(loginState,patients)
+
+  
+  login_logout_btn.addEventListener("click", changeSignState);
+
+  setAddPatient(loginState)
+
+  setTableContent(loginState,patients)
+  
 }
 
 // const c = await database.auth.update({
