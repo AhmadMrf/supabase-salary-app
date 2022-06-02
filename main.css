@@ -292,7 +292,7 @@ form.hidden::after{
   display: flex;
   width: 100%;
   height: calc(100% - 25px);
-  background: #8cbba1;
+  background-color: rgb(140, 187, 161);
   position: absolute;
   justify-content: center;
   align-items: center;
@@ -301,8 +301,12 @@ form.hidden::after{
   cursor: pointer;
   transform: scale(1);
 }
+
+form.hidden:hover::after{
+  background-color: rgb(140, 187, 140);
+}
 form::after{
-  transition: all .5s ease;
+  transition: all .3s ease;
   content: '';
   display: flex;
   width: 0;
