@@ -1,4 +1,4 @@
-/*//////////////////////////////////////////////////////////////////
+/*/////////////////////co/////////////////////////////////////////////
 [ RESTYLE TAG ]*/
 @import "./reset.css";
 
@@ -48,6 +48,8 @@
 .form-content{
   background-color: #fff;
   width: 100%;
+  display: flex;
+  justify-content: center;
 }
 .form-details {
   display: none;
@@ -55,7 +57,7 @@
   padding: 25px;
   text-align: center;
   width: min(100%, 40rem);
-  margin: 0 auto;
+  justify-content: space-between;
 }
 
 
@@ -63,7 +65,7 @@
   display: none;
 }
 #nurse:checked ~ .form-content div[data-form="nurse"] {
-  display: block;
+  display: flex;
 }
 #nurse:checked ~ .form-titles label[for="nurse"] {
   background-color: #fff;
@@ -251,16 +253,16 @@ button:hover {
   background-color: rgb(140, 187, 140);
 }
 
-button[slot="signout-btn"]{
-  width: 10rem;
-}
-
 
 .panel-account{
   display: flex;
   align-items: center;
   gap: 2rem;
   justify-content: space-between;
+  width: 100%;
+}
+.panel-account button{
+  flex: .5;
 }
 .panel-info{
   display: flex;
@@ -269,6 +271,7 @@ button[slot="signout-btn"]{
   font-size: 14px;
   gap: 10px;
   text-align: right;
+  flex: 1;
 }
 .panel-info > span{
   border-right: 5px solid rgba(54, 48, 74, 0.5);
@@ -282,8 +285,31 @@ form {
   align-items: center;
   gap: .5rem;
   background: #fff;
+  position: relative;
 }
-
+form.hidden::after{
+  content: attr(data-type);
+  display: flex;
+  width: 100%;
+  height: calc(100% - 25px);
+  background: #8cbba1;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transform: scale(1);
+}
+form::after{
+  transition: all .5s ease;
+  content: '';
+  display: flex;
+  width: 0;
+  height: calc(10% - 25px);
+  transform: scale(.3);
+  position: absolute;
+}
 .info {
   width: min(100%, 40rem);
   display: flex;

@@ -18,23 +18,34 @@ let fullNameValue;
 let jobValue;
 let loginBtn;
 
-setupApp(isLogin());
+let isLogin = database.auth.user()
+console.log(isLogin);
+
+loginContent.addEventListener('click', e => {
+  if(e.target.classList.contains('hidden')){
+   let forms = loginContent.children
+    forms[0].classList.toggle('hidden')
+    forms[1].classList.toggle('hidden')
+  }
+})
+
+setupApp(isLogin);
 
 //check localstorage for an active user
 // if user exist return user
 // if user not exist reutrn null
-function isLogin() {
-  console.log("is login");
-  let localUser = JSON.parse(localStorage.getItem("supabase.auth.token"));
-  if (localUser) {
-    let {
-      currentSession: { user },
-    } = localUser;
-    return user;
-  } else {
-    return localUser;
-  }
-}
+// function isLogin() {
+//   console.log("is login");
+//   let localUser = JSON.parse(localStorage.getItem("supabase.auth.token"));
+//   if (localUser) {
+//     let {
+//       currentSession: { user },
+//     } = localUser;
+//     return user;
+//   } else {
+//     return localUser;
+//   }
+// }
 
 // if sign in retun user info
 // if error return  error obj
@@ -80,11 +91,8 @@ async function signUpAccount() {
 // sign out user and return null
 async function signOutAccount() {
   console.log("signout");
-  // let activeSession = await database.auth.session();
-  let { currentSession } = JSON.parse(
-    localStorage.getItem("supabase.auth.token")
-  );
-  return await database.auth.signOut(currentSession.access_token);
+  let activeSession = database.auth.session();
+  return await database.auth.signOut(activeSession.access_token);
 }
 
 //
@@ -109,8 +117,8 @@ async function getPatientsData(id) {
 // change betwean sign in and sign out and call setupApp again
 async function changeSignState() {
   console.log("click btn");
-
-  if (isLogin()) {
+  isLogin = database.auth.user()
+  if (isLogin) {
     // sign out btn active
     let { error } = await signOutAccount();
     if (error) {
@@ -154,15 +162,24 @@ function setLoginContent(loginState,patients){
       </div>
   `
     : `
-      <form action="#">
+      
+      <form data-type="ورود" action="#">
         <div class="info">
           <input type="email" name="email" placeholder="ایمیل" />
           <input type="password" name="password" placeholder="رمز ورود" />
-          <input class="nurse-data" type="text" name="fullName" placeholder="نام و نام خانوادگی" />
-          <input class="nurse-data" type="text" name="job" placeholder="سمت و شغل" />
         </div>
-        <button type="button" href="#">ورود یا ثبت نام</button>
+        <button type="button" href="#">ورود</button>
         <a href="#">فراموشی رمز عبور </a>
+      </form>
+
+      <form class=" hidden"  data-type="ثبت نام" action="##">
+        <div class="info">
+          <input type="email" name="email" placeholder="ایمیل" />
+          <input type="password" name="password" placeholder="رمز ورود" />
+          <input type="text" name="fullName" placeholder="نام و نام خانوادگی" />
+          <input type="text" name="job" placeholder="سمت و شغل" />
+        </div>
+        <button type="button" href="#"> ثبت نام</button>
       </form>
   `;
   loginForm = loginContent.querySelector("form");
@@ -181,7 +198,7 @@ function setTableContent(loginState,patients){
       <td class="fake-td" colspan="2"><button id="refreshBtn" >مجدد تلاش کنید</button></td>
       </tr>`
       ;
-      document.querySelector('#refreshBtn').addEventListener('click', ()=>setupApp(isLogin()))
+      document.querySelector('#refreshBtn').addEventListener('click', ()=>setupApp(isLogin))
     } else {
       tbody.innerHTML = patients
         .map((patient, i) => {
