@@ -466,12 +466,16 @@ a{
   tbody tr {
     font-size: 14px;
   }
+  
 }
 
 @media (max-width: 576px) {
   .container-table100 {
     padding-left: 15px;
     padding-right: 15px;
+  }
+  .form-details{
+    flex-direction: column;
   }
 }
 
