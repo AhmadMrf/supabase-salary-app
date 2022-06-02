@@ -37,12 +37,13 @@ async function signInAccount() {
   let emailValue;
   let passwordValue;
 
-  emailValue = signinForm.elements.email;
-  passwordValue = signinForm.elements.password;
-
+  
+  emailValue = signinForm.elements.email.value;
+  passwordValue = signinForm.elements.password.value;
+  
   const { user, error } = await database.auth.signIn({
-    email: emailValue.value,
-    password: passwordValue.value,
+    email: emailValue,
+    password: passwordValue,
   });
   // console.log(typeof error);
   if (error) {
@@ -59,10 +60,10 @@ async function signUpAccount() {
   let passwordValue;
   let fullNameValue;
   let jobValue;
-  emailValue = signupForm.elements.email;
-  passwordValue = signupForm.elements.password;
-  fullNameValue = signupForm.elements.fullName;
-  jobValue = signupForm.elements.job;
+  emailValue = signupForm.elements.email.value;
+  passwordValue = signupForm.elements.password.value;
+  fullNameValue = signupForm.elements.fullName.value;
+  jobValue = signupForm.elements.job.value;
 
   const { user, error } = await database.auth.signUp(
     {
