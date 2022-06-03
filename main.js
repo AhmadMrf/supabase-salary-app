@@ -7,25 +7,27 @@ const database = createClient(supabaseUrl, supabaseKey);
 
 const loginLabel = document.querySelector("#login-label");
 const loginContent = document.querySelector("#login-content");
-const addPatient = document.querySelector("#add-patient-form");
+const addPatientSection = document.querySelector("#add-patient-form");
 const tbody = document.querySelector("table > tbody");
-let errorBox = document.querySelector('#error-box')
+let errorBox = document.querySelector("#error-box");
 
-let signinForm;  //declare in setLoginContent func
-let signupForm;  //declare in setLoginContent func
-let signoutBtn;  //declare in setLoginContent func
+let signinForm; //declare in setLoginContent func
+let signupForm; //declare in setLoginContent func
+let signoutBtn; //declare in setLoginContent func
+let addPatientForm;
 
-let isLogin = database.auth.user()  // return null or user data
-console.log(isLogin);
+let isLogin = database.auth.user(); // return null or user data
+
+// console.log(isLogin);
 
 //toggle between sign in and sign up form
-loginContent.addEventListener('click', e => {
-  if(e.target.classList.contains('hidden')){
-   let forms = loginContent.children
-    forms[0].classList.toggle('hidden')
-    forms[1].classList.toggle('hidden')
+loginContent.addEventListener("click", (e) => {
+  if (e.target.classList.contains("hidden")) {
+    let forms = loginContent.children;
+    forms[0].classList.toggle("hidden");
+    forms[1].classList.toggle("hidden");
   }
-})
+});
 
 // setup app in first run
 setupApp(isLogin);
@@ -34,16 +36,15 @@ setupApp(isLogin);
 // if error call errorManage func
 async function signInAccount() {
   console.log("signin");
-  let emailValue;
-  let passwordValue;
+  let email;
+  let password;
 
-  
-  emailValue = signinForm.elements.email.value;
-  passwordValue = signinForm.elements.password.value;
-  
+  email = signinForm.elements.email.value;
+  password = signinForm.elements.password.value;
+
   const { user, error } = await database.auth.signIn({
-    email: emailValue,
-    password: passwordValue,
+    email,
+    password,
   });
   // console.log(typeof error);
   if (error) {
@@ -56,24 +57,24 @@ async function signInAccount() {
 //if error call errorManage func
 async function signUpAccount() {
   console.log("signup");
-  let emailValue;
-  let passwordValue;
-  let fullNameValue;
-  let jobValue;
-  emailValue = signupForm.elements.email.value;
-  passwordValue = signupForm.elements.password.value;
-  fullNameValue = signupForm.elements.fullName.value;
-  jobValue = signupForm.elements.job.value;
+  let email;
+  let password;
+  let fullName;
+  let job;
+  email = signupForm.elements.email.value;
+  password = signupForm.elements.password.value;
+  fullName = signupForm.elements.fullName.value;
+  job = signupForm.elements.job.value;
 
   const { user, error } = await database.auth.signUp(
     {
-      email: emailValue,
-      password: passwordValue,
+      email,
+      password,
     },
     {
       data: {
-        fullName: fullNameValue,
-        job: jobValue,
+        fullName,
+        job,
       },
     }
   );
@@ -93,9 +94,9 @@ async function signOutAccount() {
 //manage errors
 function errorManage(errorMessage) {
   console.log("error manage");
-  errorBox.innerHTML = errorMessage.message
+  errorBox.innerHTML = errorMessage.message;
   setTimeout(() => {
-    errorBox.innerHTML = ''
+    errorBox.innerHTML = "";
   }, 5000);
   console.log(errorMessage, "مدیریت خطا");
 }
@@ -120,50 +121,49 @@ async function changeSignState(stat) {
 
   let userData;
 
-  switch(stat) {
+  switch (stat) {
     case "signin":
       // sign in btn active
-       userData = await signInAccount();
-        if (userData) {
-          setupApp(userData);
-        } else {
-          console.log(userData, " خطا");
-        }
+      userData = await signInAccount();
+      if (userData) {
+        setupApp(userData);
+      } else {
+        console.log(userData, " خطا");
+      }
       break;
     case "signup":
-     // sign up btn active
+      // sign up btn active
       userData = await signUpAccount();
-     if (userData) {
-       setupApp(userData);
-     } else {
-       console.log(userData, " خطا");
-     }
+      if (userData) {
+        setupApp(userData);
+      } else {
+        console.log(userData, " خطا");
+      }
       break;
     default:
       // sign out btn active
       let { error } = await signOutAccount();
-        if (error) {
-          console.log("has error", error);
-        } else {
-          console.log("no error", error);
-          setupApp(null);
-        }
+      if (error) {
+        console.log("has error", error);
+      } else {
+        console.log("no error", error);
+        setupApp(null);
+      }
   }
 }
 
 //get user data (loginState) or null as argument
-function setLabelLoginTab(loginState){
+function setLabelLoginTab(loginState) {
   loginLabel.textContent = loginState
-  ? `درمانگر : ${loginState.user_metadata.fullName}`
-  : "ورود - ثبت نام";
+    ? `درمانگر : ${loginState.user_metadata.fullName}`
+    : "ورود - ثبت نام";
 }
 
 //get user data (loginState) or null and patients (patients array) as argument
 //and 1- set inner content 2- declare signoutBtn and signinForm 3- add event listener to buttons
-function setLoginContent(loginState,patients){
-  if(loginState){
-    loginContent.innerHTML = 
-     `
+function setLoginContent(loginState, patients) {
+  if (loginState) {
+    loginContent.innerHTML = `
       <div class="panel-account">
         <div class="panel-info">
           <span>${loginState.user_metadata.fullName}</span>
@@ -176,16 +176,14 @@ function setLoginContent(loginState,patients){
       </div>
   `;
     signoutBtn = loginContent.querySelector("button");
-    signinForm = null
-    signupForm = null   
+    signinForm = null;
+    signupForm = null;
 
-    signoutBtn.addEventListener("click", ()=> changeSignState("signout"));
+    signoutBtn.addEventListener("click", () => changeSignState("signout"));
 
     // return {signinForm,signupForm,signoutBtn}
-
-  }else{
-    loginContent.innerHTML = 
-    `
+  } else {
+    loginContent.innerHTML = `
     <form data-type="ورود" action="#">
       <div class="info">
         <input  required type="email" name="email" placeholder="ایمیل" />
@@ -205,32 +203,34 @@ function setLoginContent(loginState,patients){
       <button name="signupBtn" type="button" href="#"> ثبت نام</button>
     </form>
 `;
-   signinForm = loginContent.querySelectorAll("form")[0];
-   signupForm = loginContent.querySelectorAll("form")[1];
+    signinForm = loginContent.querySelectorAll("form")[0];
+    signupForm = loginContent.querySelectorAll("form")[1];
 
-   signinForm.elements.signinBtn.addEventListener("click", ()=> changeSignState("signin"));
-   signupForm.elements.signupBtn.addEventListener("click", ()=> changeSignState("signup"));
+    signinForm.elements.signinBtn.addEventListener("click", () =>
+      changeSignState("signin")
+    );
+    signupForm.elements.signupBtn.addEventListener("click", () =>
+      changeSignState("signup")
+    );
 
-   signoutBtn = null
+    signoutBtn = null;
 
-  //  return {signinForm,signupForm,signoutBtn} 
-
+    //  return {signinForm,signupForm,signoutBtn}
   }
-
 }
 
 //get user data (loginState) or null and patients (patients array) as argument
 // and fill rows based on patients info from database
-function setTableContent(loginState,patients){
+function setTableContent(loginState, patients) {
   if (loginState) {
     if (!patients) {
-      tbody.innerHTML =
-      `<tr>
+      tbody.innerHTML = `<tr>
       <td class="fake-td" colspan="4">اختلال در دریافت اطلاعات بیماران </td>
       <td class="fake-td" colspan="2"><button id="refreshBtn" >مجدد تلاش کنید</button></td>
-      </tr>`
-      ;
-      document.querySelector('#refreshBtn').addEventListener('click', ()=>setupApp(isLogin))
+      </tr>`;
+      document
+        .querySelector("#refreshBtn")
+        .addEventListener("click", () => setupApp(isLogin));
     } else {
       tbody.innerHTML = patients
         .map((patient, i) => {
@@ -248,39 +248,59 @@ function setTableContent(loginState,patients){
   } else {
     tbody.innerHTML =
       '<tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr>';
-}
+  }
 }
 
 //get user data (loginState) or null as argument
-function setAddPatientTab(loginState){
-  addPatient.innerHTML = loginState
-    ? `
+function setAddPatientTab(loginState) {
+  if (loginState) {
+    addPatientSection.innerHTML = `
       <form action="#">
         <div class="info">
-          <input class="fname" type="text" name="name" placeholder="نام بیمار"/>
-          <input type="text" name="name" placeholder="کد ملی" />
-          <input type="text" name="name" placeholder="شماره تماس" />
-          <input type="text" name="name" placeholder="آدرس" />
+          <input class="fname" type="text" name="fullName" placeholder="نام بیمار"/>
+          <input type="text" name="codeNum" placeholder="کد ملی" />
+          <input type="text" name="telNum" placeholder="شماره تماس" />
+          <input type="text" name="adderes" placeholder="آدرس" />
         </div>
-        <button href="#">افزودن بیمار جدید</button>
+        <button type="button" href="#">افزودن بیمار جدید</button>
       </form>
-  `
-    : "<span>ابتدا وارد حساب کاربری خود شوید</span>";
+  `;
+    addPatientForm = addPatientSection.querySelector("form");
+    let addPatientBtn = addPatientSection.querySelector("button");
+    addPatientBtn.addEventListener("click", addPatient);
+  } else {
+    addPatientSection.innerHTML =
+      "<span>ابتدا وارد حساب کاربری خود شوید</span>";
+  }
 }
 
+async function addPatient() {
+  console.log("add");
+  let fullName = addPatientForm.elements.fullName.value;
+  let codeNum = addPatientForm.elements.codeNum.value;
+  let telNum = addPatientForm.elements.telNum.value;
+  let adderes = addPatientForm.elements.adderes.value;
+  let acceptor = database.auth.user().id
+  // console.log(fullName,codeNum,telNum,adderes);
+
+  let a = await database
+    .from("patients")
+    .insert([{ fullName, codeNum, telNum, adderes, acceptor }], { returning: "minimal" });
+  console.log(a);
+  
+}
 
 async function setupApp(loginState) {
   console.log("setup");
-  let patients = loginState ? await getPatientsData(loginState.id) : []
+let patients = isLogin ? await getPatientsData(isLogin.id) : [];
 
-  console.log("patients num",patients);
+  console.log("patients", patients);
 
-  setLabelLoginTab(loginState)
+  setLabelLoginTab(loginState);
 
-  setLoginContent(loginState,patients)
+  setLoginContent(loginState, patients);
 
-  setAddPatientTab(loginState)
+  setAddPatientTab(loginState);
 
-  setTableContent(loginState,patients)
-  
+  setTableContent(loginState, patients);
 }
