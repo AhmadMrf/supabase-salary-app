@@ -240,10 +240,18 @@ function setTableContent(loginState, patients) {
             <td class="column3">${patient.telNum}</td>
             <td class="column4">${patient.visit + patient.equip}</td>
             <td class="column5">${patient.income}</td>
-            <td class="column6"><button>ویرایش </button></td>
+            <td class="column6"><button data-patientid="${patient.id}" >ویرایش </button></td>
             </tr>`);
         })
         .join("");
+
+        let editBtns = tbody.querySelectorAll("button")
+        editBtns.forEach(editBtn => {
+          editBtn.addEventListener('click',(e) => {
+            let b = patients.find(patient=>patient.id == e.target.dataset.patientid)
+            console.log(b)
+          })
+        })
     }
   } else {
     tbody.innerHTML =
@@ -287,7 +295,10 @@ async function addPatient() {
     .from("patients")
     .insert([{ fullName, codeNum, telNum, adderes, acceptor }], { returning: "minimal" });
   console.log(a);
-  
+
+  let patients = isLogin ? await getPatientsData(isLogin.id) : [];
+  setLoginContent(isLogin, patients);
+  setTableContent(isLogin, patients);
 }
 
 async function setupApp(loginState) {

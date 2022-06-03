@@ -169,7 +169,9 @@ tbody tr {
   line-height: 1.2;
   font-weight: unset;
 }
-
+tbody tr.paid{
+  background-color: rgb(129, 255, 207);
+}
 tbody tr:hover {
   color: #555555;
   background-color: rgb(198, 193, 212);
