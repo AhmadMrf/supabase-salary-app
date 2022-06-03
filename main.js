@@ -9,11 +9,11 @@ const loginLabel = document.querySelector("#login-label");
 const loginContent = document.querySelector("#login-content");
 const addPatient = document.querySelector("#add-patient-form");
 const tbody = document.querySelector("table > tbody");
+let errorBox = document.querySelector('#error-box')
 
 let signinForm;  //declare in setLoginContent func
 let signupForm;  //declare in setLoginContent func
 let signoutBtn;  //declare in setLoginContent func
-
 
 let isLogin = database.auth.user()  // return null or user data
 console.log(isLogin);
@@ -91,9 +91,13 @@ async function signOutAccount() {
 }
 
 //manage errors
-function errorManage(errorMassage) {
+function errorManage(errorMessage) {
   console.log("error manage");
-  console.log(errorMassage, "مدیریت خطا");
+  errorBox.innerHTML = errorMessage.message
+  setTimeout(() => {
+    errorBox.innerHTML = ''
+  }, 5000);
+  console.log(errorMessage, "مدیریت خطا");
 }
 
 //give user id
@@ -267,9 +271,9 @@ function setAddPatientTab(loginState){
 
 async function setupApp(loginState) {
   console.log("setup");
-  let patients = loginState ? await getPatientsData(loginState.id) : [];
+  let patients = loginState ? await getPatientsData(loginState.id) : []
 
-  console.log("patients num",patients.length);
+  console.log("patients num",patients);
 
   setLabelLoginTab(loginState)
 
