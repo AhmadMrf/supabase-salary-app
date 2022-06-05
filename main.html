@@ -13,7 +13,6 @@
   <body>
     <div class="limiter">
       <div class="container-table100">
-
         <div class="form-wrap">
           <input
             class="hidden-input"
@@ -44,7 +43,7 @@
           <div id="error-box"></div>
           <div class="form-content">
             <div id="login-content" data-form="nurse" class="form-details">
-<!-- 
+              <!-- 
               <form data-type="ورود" class=" hidden" action="#">
                 <div class="info">
                   <input type="email" name="email" placeholder="ایمیل" />
@@ -71,9 +70,13 @@
                 </div>
                 <button type="button" href="#">خروج</button>
               </div>-->
-            </div> 
+            </div>
 
-            <div id="add-patient-form" data-form="add-patient" class="form-details">
+            <div
+              id="add-patient-form"
+              data-form="add-patient"
+              class="form-details"
+            >
               <!-- <form action="#">
                 <div class="info">
                   <input
@@ -89,7 +92,6 @@
                 <button type="button" href="#">افزودن بیمار جدید</button>
               </form> -->
               <!-- <span>ابتدا وارد حساب کاربری خود شوید</span> -->
-              
             </div>
 
             <div data-form="more" class="form-details">
@@ -114,7 +116,6 @@
         <div class="wrap-table100">
           <div class="table100">
             <table>
-              
               <thead>
                 <tr class="table100-head">
                   <th class="column1">ردیف</th>
@@ -126,9 +127,9 @@
                 </tr>
               </thead>
               <tbody>
-              <!-- <tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr> -->
-              <!-- <tr><td class="fake-td" colspan="6">در حال دریافت اطلاعات ...</td></tr> -->
-                 <!-- <tr>
+                <!-- <tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr> -->
+                <!-- <tr><td class="fake-td" colspan="6">در حال دریافت اطلاعات ...</td></tr> -->
+                <!-- <tr>
                   <td class="column1">1</td>
                   <td class="column2">احمد معروفی</td>
                   <td class="column3">0936565656</td>
@@ -136,9 +137,61 @@
                   <td class="column5">400</td>
                   <td class="column6"><button>edit</button></td>
                 </tr> -->
-                </tbody>
+              </tbody>
             </table>
           </div>
+        </div>
+        <div class="patient-account hidden">
+          <div class="patient-account-info">
+            <span>نام بیمار : <span id="patient-fullname">بیمار 1</span></span>
+            <span>کد ملی : <span id="patient-codenum">111111111</span></span>
+            <span
+              >شماره تماس : <span id="patient-telnum">0911111111</span></span
+            >
+            <span>آدرس : <span id="patient-adderes">مشهد</span></span>
+          </div>
+          <div class="patient-account-bill">
+            <table>
+              <thead>
+                <tr class="table100-head">
+                  <th class="column1">ردیف</th>
+                  <th class="column2">تاریخ</th>
+                  <th class="column3">ویزیت</th>
+                  <th class="column4">مصرفی</th>
+                  <th class="column5">دریافتی</th>
+                  <th class="column6"></th>
+                </tr>
+
+                <tr>
+                  <td class="column1"></td>
+                  <td class="column2"><input type="date" /></td>
+                  <td class="column3"><input step="5" type="number" /></td>
+                  <td class="column4"><input step="5" type="number" /></td>
+                  <td class="column5"><input step="5" type="number" /></td>
+                  <td class="column6"><button>افزودن</button></td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="column1">1</td>
+                  <td class="column2">1/5/1401</td>
+                  <td class="column3">400</td>
+                  <td class="column4">50</td>
+                  <td class="column5">200</td>
+                  <td class="column6"><button>اصلاح</button></td>
+                </tr>
+                <tr>
+                  <td class="column1">1</td>
+                  <td class="column2">1/5/1401</td>
+                  <td class="column3">400</td>
+                  <td class="column4">50</td>
+                  <td class="column5">200</td>
+                  <td class="column6"><button>اصلاح</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <button id="close-bill-btn">بستن</button>
         </div>
       </div>
     </div>

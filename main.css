@@ -12,7 +12,16 @@
   width: 100%;
   margin: 0 auto;
 }
-
+.limiter.shadow::after {
+  content: "";
+  display: block;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(54, 48, 74, 0.8);
+  top: 0;
+  z-index: 1;
+}
 .container-table100 {
   width: 100%;
   min-height: 100vh;
@@ -32,11 +41,11 @@
   flex-direction: column;
   padding: 33px 30px;
   gap: 20px;
+  position: relative;
 }
 
 .wrap-table100,
 .form-wrap {
-  margin-top: 1rem;
   width: 100%;
   max-width: 1170px;
 }
@@ -45,7 +54,7 @@
   flex-flow: column nowrap;
   justify-content: center;
 }
-.form-content{
+.form-content {
   background-color: #fff;
   width: 100%;
   display: flex;
@@ -58,8 +67,8 @@
   text-align: center;
   width: min(100%, 40rem);
   justify-content: space-between;
+  padding-top: 0;
 }
-
 
 .hidden-input {
   display: none;
@@ -169,8 +178,13 @@ tbody tr {
   line-height: 1.2;
   font-weight: unset;
 }
-tbody tr.paid{
+tbody tr.paid {
   background-color: rgb(129, 255, 207);
+}
+tbody tr label {
+  border-radius: 10px;
+  background-color: rgb(140, 187, 161);
+  cursor: pointer;
 }
 tbody tr:hover {
   color: #555555;
@@ -198,7 +212,7 @@ tbody tr:hover {
 }
 
 .column6 {
-  width: 80px;
+  width: 230px;
 }
 
 form {
@@ -221,10 +235,10 @@ input {
 input::placeholder {
   color: #000;
 }
-.nurse-data{
+.nurse-data {
   display: none;
 }
-.nurse-data.active{
+.nurse-data.active {
   display: initial;
 }
 
@@ -255,18 +269,17 @@ button:hover {
   background-color: rgb(140, 187, 140);
 }
 
-
-.panel-account{
+.panel-account {
   display: flex;
   align-items: center;
   gap: 2rem;
   justify-content: space-between;
   width: 100%;
 }
-.panel-account button{
-  flex: .5;
+.panel-account button {
+  flex: 0.5;
 }
-.panel-info{
+.panel-info {
   display: flex;
   align-items: start;
   flex-flow: column nowrap;
@@ -275,7 +288,7 @@ button:hover {
   text-align: right;
   flex: 1;
 }
-.panel-info > span{
+.panel-info > span {
   border-right: 5px solid rgba(54, 48, 74, 0.5);
   padding-right: 10px;
 }
@@ -285,11 +298,11 @@ form {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  gap: .5rem;
+  gap: 0.5rem;
   background: #fff;
   position: relative;
 }
-form.hidden::after{
+form.hidden::after {
   content: attr(data-type);
   display: flex;
   width: 100%;
@@ -304,16 +317,16 @@ form.hidden::after{
   transform: scale(1);
 }
 
-form.hidden:hover::after{
+form.hidden:hover::after {
   background-color: rgb(140, 187, 140);
 }
-form::after{
-  transition: all .3s ease;
-  content: '';
+form::after {
+  transition: all 0.3s ease;
+  content: "";
   display: flex;
   width: 0;
   height: calc(10% - 25px);
-  transform: scale(.3);
+  transform: scale(0.3);
   position: absolute;
 }
 .info {
@@ -347,25 +360,89 @@ button {
   width: min(80%, 20rem);
   cursor: pointer;
 }
- button:hover{
+button:hover {
   background-color: rgb(140, 187, 140);
 }
-a{
-  font-size: .7rem;
+a {
+  font-size: 0.7rem;
 }
-#error-box{
+#error-box {
   text-align: center;
   background-color: #fff;
   color: red;
   padding: 1rem;
 }
 
+.patient-account {
+  position: fixed;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  top: 2vh;
+  bottom: 0;
+  width: 95%;
+  /* min-height: 50vmax; */
+  max-height: 90vh;
+  height: 90vh;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 1.5rem 0.5rem;
+  display: flex;
+  flex-flow: column;
+  border: 1px dashed black;
+  z-index: 2;
+}
+.patient-account.hidden {
+  display: none;
+}
+.patient-account-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 1.5rem;
+  padding: 1rem 0;
+}
+.patient-account-info > span {
+  padding: 10px 5px;
+  color: #555555;
+}
+.patient-account-bill {
+  overflow-y: auto;
+  position: relative;
+}
+.patient-account-bill table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.patient-account-bill table input {
+  width: 100%;
+  text-align: center;
+  color: inherit;
+  margin: 0;
+}
+.patient-account-bill table thead tr:last-child {
+  background-color: #fff;
+  border-bottom: 2px solid #36304a;
+}
+.patient-account-bill table thead tr:last-child button {
+  background-color: rgb(140, 173, 187);
+}
+.patient-account-bill table thead tr:last-child button:hover {
+  background-color: rgb(140, 173, 197);
+}
 
+.patient-account > button {
+  width: 100px;
+  display: block;
+  margin: 10px auto;
+}
 
 @media screen and (max-width: 700px) {
-  table {
+  /* table {
     display: block;
-  }
+  } */
 
   table > *,
   table tr,
@@ -373,12 +450,26 @@ a{
   table th {
     display: block;
   }
-
-  table thead {
+  .patient-account-info {
+    padding: 0;
+  }
+  .table100 table thead {
     display: none;
   }
-
-  table tbody tr {
+  .patient-account-bill {
+    border-top: 2px solid #36304a;
+  }
+  .patient-account-bill table thead {
+    top: -230px;
+  }
+  .patient-account-bill table thead tr:first-child {
+    display: none;
+  }
+  .patient-account-bill table thead tr:last-child {
+    padding-top: 0;
+  }
+  table tbody tr,
+  .patient-account-bill table thead tr {
     height: auto;
     padding: 37px 0;
     display: flex;
@@ -386,26 +477,32 @@ a{
     align-items: center;
     margin-bottom: 2px;
   }
-
+  .patient-account-bill table thead tr td {
+    border: 0;
+  }
   table tbody tr:hover {
     background-color: #e4e4e4;
   }
 
-  table tbody tr td {
+  table tbody tr td,
+  .patient-account-bill table thead tr td {
     padding-right: 40%;
     margin-bottom: 24px;
   }
 
-  table tbody tr td:first-child {
+  table tbody tr td:first-child,
+  .patient-account-bill table thead tr td:first-child {
     background-color: #36304a;
     color: #fff;
   }
-  table tbody tr td:last-child {
+  table tbody tr td:last-child,
+  .patient-account-bill table thead tr td:last-child {
     margin-bottom: 0;
     padding: 5px 0;
   }
 
-  table tbody tr td:before {
+  table tbody tr td:before,
+  .patient-account-bill table thead tr td:before {
     font-family: OpenSans-Regular;
     font-size: 14px;
     color: #999999;
@@ -444,6 +541,26 @@ a{
     content: "";
   }
 
+  .patient-account-bill table tbody tr td:nth-child(2):before,
+  .patient-account-bill table thead tr td:nth-child(2):before {
+    content: "تاریخ";
+  }
+
+  .patient-account-bill table tbody tr td:nth-child(3):before,
+  .patient-account-bill table thead tr td:nth-child(3):before {
+    content: "ویزیت";
+  }
+
+  .patient-account-bill table tbody tr td:nth-child(4):before,
+  .patient-account-bill table thead tr td:nth-child(4):before {
+    content: "مصرفی";
+  }
+
+  .patient-account-bill table tbody tr td:nth-child(5):before,
+  .patient-account-bill table thead tr td:nth-child(5):before {
+    content: "دریافتی";
+  }
+
   table tbody tr td.fake-td {
     background-color: inherit;
     color: inherit;
@@ -457,6 +574,9 @@ a{
   .column5,
   .column6 {
     text-align: center;
+  }
+  .column6 {
+    /* width: 120px; */
   }
 
   .column4,
@@ -473,7 +593,6 @@ a{
   tbody tr {
     font-size: 14px;
   }
-  
 }
 
 @media (max-width: 576px) {
@@ -481,9 +600,7 @@ a{
     padding-left: 15px;
     padding-right: 15px;
   }
-  .form-details{
+  .form-details {
     flex-direction: column;
   }
 }
-
-

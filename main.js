@@ -10,7 +10,8 @@ const loginContent = document.querySelector("#login-content");
 const addPatientSection = document.querySelector("#add-patient-form");
 const tbody = document.querySelector("table > tbody");
 let errorBox = document.querySelector("#error-box");
-
+const patientBill = document.querySelector(".patient-account");
+const wrapper = document.querySelector(".limiter");
 let signinForm; //declare in setLoginContent func
 let signupForm; //declare in setLoginContent func
 let signoutBtn; //declare in setLoginContent func
@@ -223,7 +224,36 @@ function setLoginContent(loginState, patients) {
 // and fill rows based on patients info from database
 function setTableContent(loginState, patients) {
   if (loginState) {
-    if (!patients) {
+    if (patients) {
+      tbody.innerHTML = patients
+        .map((patient, i) => {
+          return (patient = `<tr>
+          <td class="column1">${+i + 1}</td>
+          <td class="column2">${patient.fullName}</td>
+          <td class="column3">${patient.telNum}</td>
+          <td class="column4">${0}</td>
+          <td class="column5">${0}</td>
+          <td class="column6"><button data-patientid="${
+            patient.id
+          }" >صورت حساب </button></td>
+          </tr>`);
+        })
+        .join("");
+
+      let editBtns = tbody.querySelectorAll("button");
+      editBtns.forEach((editBtn) => {
+        editBtn.addEventListener("click", (e) =>
+          openEditPatientBill(e, patients)
+        );
+      });
+
+      if (!patients.length) {
+        tbody.innerHTML = `<tr>
+       <td class="fake-td" colspan="4">شما هنوز بیماری ثبت نکرده اید . </td>
+       <td class="fake-td" colspan="2"><label for="add-patient">افزودن بیمار جدید </label></td>
+       </tr>`;
+      }
+    } else {
       tbody.innerHTML = `<tr>
       <td class="fake-td" colspan="4">اختلال در دریافت اطلاعات بیماران </td>
       <td class="fake-td" colspan="2"><button id="refreshBtn" >مجدد تلاش کنید</button></td>
@@ -231,32 +261,37 @@ function setTableContent(loginState, patients) {
       document
         .querySelector("#refreshBtn")
         .addEventListener("click", () => setupApp(isLogin));
-    } else {
-      tbody.innerHTML = patients
-        .map((patient, i) => {
-          return (patient = `<tr>
-            <td class="column1">${+i + 1}</td>
-            <td class="column2">${patient.fullName}</td>
-            <td class="column3">${patient.telNum}</td>
-            <td class="column4">${patient.visit + patient.equip}</td>
-            <td class="column5">${patient.income}</td>
-            <td class="column6"><button data-patientid="${patient.id}" >ویرایش </button></td>
-            </tr>`);
-        })
-        .join("");
-
-        let editBtns = tbody.querySelectorAll("button")
-        editBtns.forEach(editBtn => {
-          editBtn.addEventListener('click',(e) => {
-            let b = patients.find(patient=>patient.id == e.target.dataset.patientid)
-            console.log(b)
-          })
-        })
     }
   } else {
     tbody.innerHTML =
       '<tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr>';
   }
+}
+
+function openEditPatientBill(e, patients) {
+  wrapper.classList.add("shadow");
+  patientBill.classList.remove("hidden");
+  let selectedPatient = patients.find(
+    (patient) => patient.id == e.target.dataset.patientid
+  );
+
+  const patientFullname = patientBill.querySelector("#patient-fullname");
+  const patientCodenum = patientBill.querySelector("#patient-codenum");
+  const patientTelnum = patientBill.querySelector("#patient-telnum");
+  const patientAdderes = patientBill.querySelector("#patient-adderes");
+
+  patientFullname.innerHTML = selectedPatient.fullName;
+  patientCodenum.innerHTML = selectedPatient.codeNum;
+  patientTelnum.innerHTML = selectedPatient.telNum;
+  patientAdderes.innerHTML = selectedPatient.adderes;
+
+  patientBill.querySelector("#close-bill-btn").addEventListener("click", () => {
+    wrapper.classList.remove("shadow");
+    patientBill.classList.add("hidden");
+  });
+}
+function closeEditPatientBill() {
+  patientBill.classList.remove("hidden");
 }
 
 //get user data (loginState) or null as argument
@@ -288,22 +323,27 @@ async function addPatient() {
   let codeNum = addPatientForm.elements.codeNum.value;
   let telNum = addPatientForm.elements.telNum.value;
   let adderes = addPatientForm.elements.adderes.value;
-  let acceptor = database.auth.user().id
+  let nurse_id = database.auth.user().id;
   // console.log(fullName,codeNum,telNum,adderes);
 
-  let a = await database
+  let { error } = await database
     .from("patients")
-    .insert([{ fullName, codeNum, telNum, adderes, acceptor }], { returning: "minimal" });
-  console.log(a);
+    .insert([{ fullName, codeNum, telNum, adderes, nurse_id }], {
+      returning: "minimal",
+    });
 
-  let patients = isLogin ? await getPatientsData(isLogin.id) : [];
-  setLoginContent(isLogin, patients);
-  setTableContent(isLogin, patients);
+  if (error) {
+    errorManage(error);
+  } else {
+    let patients = isLogin ? await getPatientsData(isLogin.id) : [];
+    setLoginContent(isLogin, patients);
+    setTableContent(isLogin, patients);
+  }
 }
 
 async function setupApp(loginState) {
   console.log("setup");
-let patients = isLogin ? await getPatientsData(isLogin.id) : [];
+  let patients = isLogin ? await getPatientsData(isLogin.id) : [];
 
   console.log("patients", patients);
 
