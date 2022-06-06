@@ -371,6 +371,7 @@ a {
   background-color: #fff;
   color: red;
   padding: 1rem;
+  display: none;
 }
 
 .patient-account {
@@ -410,6 +411,10 @@ a {
 .patient-account-bill {
   overflow-y: auto;
   position: relative;
+  border: 2px dashed rgb(198, 193, 212);
+  
+}
+.patient-account-bill table{
 }
 .patient-account-bill table thead {
   position: sticky;

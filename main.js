@@ -95,9 +95,12 @@ async function signOutAccount() {
 //manage errors
 function errorManage(errorMessage) {
   console.log("error manage");
+  errorBox.style.display = 'block'
   errorBox.innerHTML = errorMessage.message;
   setTimeout(() => {
     errorBox.innerHTML = "";
+  errorBox.style.display = 'none'
+    
   }, 5000);
   console.log(errorMessage, "مدیریت خطا");
 }
@@ -268,13 +271,14 @@ function setTableContent(loginState, patients) {
   }
 }
 
-function openEditPatientBill(e, patients) {
+async function openEditPatientBill(e, patients) {
   wrapper.classList.add("shadow");
   patientBill.classList.remove("hidden");
   let selectedPatient = patients.find(
     (patient) => patient.id == e.target.dataset.patientid
   );
 
+const tbody = patientBill.querySelector('tbody')
   const patientFullname = patientBill.querySelector("#patient-fullname");
   const patientCodenum = patientBill.querySelector("#patient-codenum");
   const patientTelnum = patientBill.querySelector("#patient-telnum");
@@ -285,13 +289,44 @@ function openEditPatientBill(e, patients) {
   patientTelnum.innerHTML = selectedPatient.telNum;
   patientAdderes.innerHTML = selectedPatient.adderes;
 
+  let patientBillData = await getPatientBillData(selectedPatient.id)
+  console.log(Object.keys(patientBillData[0]));
+patientBillData
+tbody.innerHTML = patientBillData.map((bill, i)=>{
+  return (
+    `
+    <tr>
+        <td class="column1">${+i+1}</td>
+        <td class="column2">${bill.created_at}</td>
+        <td class="column3">${bill.visit}</td>
+        <td class="column4">${bill.equipment}</td>
+        <td class="column5">${bill.income}</td>
+        <td class="column6"><button data-bill="${bill.id}" >اصلاح</button></td>
+    </tr>
+    `
+    )
+}).join('')
+
+  console.log(patientBillData);
   patientBill.querySelector("#close-bill-btn").addEventListener("click", () => {
     wrapper.classList.remove("shadow");
     patientBill.classList.add("hidden");
+    tbody.innerHTML = ''
   });
 }
-function closeEditPatientBill() {
-  patientBill.classList.remove("hidden");
+
+async function getPatientBillData(patientId){
+  console.log("get bill");
+  let {data, error} = await database.from("bills")
+  .select('*')
+  .eq('patient_id',patientId);
+  
+  if (error) {
+    errorManage(error);
+    return null;
+  }
+  
+  return data;
 }
 
 //get user data (loginState) or null as argument
