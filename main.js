@@ -233,30 +233,48 @@ async function setTableContent(loginState, patients) {
       let bills = await getPatientBillData()
       console.log('bills all', bills);
      
-    // totalCost()
+    function totalCost(id){
+      let patientBill= bills.filter(bill=>bill.patient_id==id)
+      let patientCost = patientBill.reduce((totalBill, bill)=>{
+        return {
+          cost : bill.visit + bill.equipment + (totalBill.cost??0),
+          incomes : bill.income + (totalBill.incomes??0)
+        }
+      },{})
+      console.log('total',patientCost);
+      return {...patientCost,billsLength:patientBill.length}
+    }
+    
+let cost,incomes,billsLength
 
       tbody.innerHTML = patients
         .map((patient, i) => {
+          ({cost,incomes,billsLength} = totalCost(patient.id))
           return (patient = `<tr>
           <td class="column1">${+i + 1}</td>
           <td class="column2">${patient.fullName}</td>
           <td class="column3">${patient.telNum}</td>
-          <td class="column4">${6}</td>
-          <td class="column5">${8}</td>
+          <td class="column4">${cost??0}</td>
+          <td class="column5">${incomes??0}</td>
           <td class="column6"><button data-patientid="${
             patient.id
-          }" >صورت حساب </button></td>
+          }" > صورت حساب <span>(${billsLength})<span> </button></td>
           </tr>`);
         })
         .join("");
 
+      let addCost = document.querySelector('#add-cost')
+      
       let editBtns = tbody.querySelectorAll("button");
       editBtns.forEach((editBtn) => {
         editBtn.addEventListener("click", (e) =>
           openEditPatientBill(e, patients, bills)
         );
       });
-
+      
+      addCost.addEventListener('click', ()=>{
+        console.log(777);
+      })
       
       if (!patients.length) {
         tbody.innerHTML = `<tr>
@@ -307,7 +325,7 @@ tbody.innerHTML = patientBillData
     `
     <tr>
         <td class="column1">${+i+1}</td>
-        <td class="column2">${bill.created_at}</td>
+        <td class="column2">${new Date(bill.created_at).toLocaleString('fa')}</td>
         <td class="column3">${bill.visit}</td>
         <td class="column4">${bill.equipment}</td>
         <td class="column5">${bill.income}</td>

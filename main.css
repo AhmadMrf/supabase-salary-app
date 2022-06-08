@@ -11,6 +11,7 @@
 .limiter {
   width: 100%;
   margin: 0 auto;
+  font-family: 'Times New Roman', Times, serif;
 }
 .limiter.shadow::after {
   content: "";
