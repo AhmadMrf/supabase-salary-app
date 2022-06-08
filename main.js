@@ -311,19 +311,12 @@ async function openEditPatientBill(e, patients, patientBillData) {
   const addBillForm = patientBill.querySelector("form");
   // const addBillFormBtn = addBillForm.querySelector("button");
 
-  let newBillData = {
-    created_at: addBillForm.elements.date.value,
-    patient_id: selectedPatient.id,
-    nurse_id: isLogin.id,
-    visit: addBillForm.elements.visit.value,
-    income: addBillForm.elements.income.value,
-    desc: addBillForm.elements.desc.value,
-    equipment: addBillForm.elements.equipment.value,
-  };
+
   patientFullname.innerHTML = selectedPatient.fullName;
   patientCodenum.innerHTML = selectedPatient.codeNum;
   patientTelnum.innerHTML = selectedPatient.telNum;
   patientAdderes.innerHTML = selectedPatient.adderes;
+
 
   tbody.innerHTML = renderpatientBill(selectedPatient, patientBillData);
 
@@ -335,14 +328,27 @@ async function openEditPatientBill(e, patients, patientBillData) {
     setTableContent(isLogin, patients);
   });
 
-  patientBill.querySelector("#add-bill").addEventListener("cilck", () => {
+  patientBill.querySelector('#add-bill').addEventListener("click", () => {
+      let newBillData = {
+        created_at: addBillForm.elements.date.value,
+        patient_id: selectedPatient.id,
+        nurse_id: isLogin.id,
+        visit: addBillForm.elements.visit.value,
+        income: addBillForm.elements.income.value,
+        desc: addBillForm.elements.desc.value,
+        equipment: addBillForm.elements.equipment.value,
+      };
+    console.log(newBillData);
+      
     addBill(newBillData);
-    console.log("new");
-    console.log("new", newBillData);
+      
+    
+    // console.log("new", newBillData);
   });
 }
 
 function renderpatientBill(patientid, bills) {
+  console.log('renderbill');
   let dialogBillContent = bills
     .filter((bill) => {
       return bill.patient_id == patientid.id;
@@ -367,6 +373,7 @@ function renderpatientBill(patientid, bills) {
 
 async function addBill(billData) {
   console.log("add bill");
+  let {patient_id:patientid} = billData
   let { error } = await database.from("bills").insert([billData], {
     returning: "minimal",
   });
@@ -374,8 +381,8 @@ async function addBill(billData) {
   if (error) {
     errorManage(error);
   } else {
-    let patients = isLogin ? await getPatientsData(isLogin.id) : [];
-    renderpatientBill(isLogin, patients);
+    let bills = await getPatientBillData(patientid);
+    renderpatientBill(patientid, bills);
   }
 }
 
