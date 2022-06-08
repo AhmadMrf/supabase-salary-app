@@ -238,7 +238,6 @@ async function setTableContent(loginState, patients) {
             incomes: bill.income + (totalBill.incomes ?? 0),
           };
         }, {});
-        console.log("total", patientCost);
         return { ...patientCost, billsLength: patientBill.length };
       }
 
@@ -260,7 +259,7 @@ async function setTableContent(loginState, patients) {
         })
         .join("");
 
-      let addCost = document.querySelector("#add-cost");
+      // let addCost = document.querySelector("#add-cost");
 
       let editBtns = tbody.querySelectorAll("button");
       editBtns.forEach((editBtn) => {
@@ -269,9 +268,9 @@ async function setTableContent(loginState, patients) {
         );
       });
 
-      addCost.addEventListener("click", () => {
-        console.log(777);
-      });
+      // addCost.addEventListener("click", () => {
+      //   addBill();
+      // });
 
       if (!patients.length) {
         tbody.innerHTML = `<tr>
@@ -309,15 +308,44 @@ async function openEditPatientBill(e, patients, patientBillData) {
   const patientCodenum = patientBill.querySelector("#patient-codenum");
   const patientTelnum = patientBill.querySelector("#patient-telnum");
   const patientAdderes = patientBill.querySelector("#patient-adderes");
+  const addBillForm = patientBill.querySelector("form");
+  // const addBillFormBtn = addBillForm.querySelector("button");
 
+  let newBillData = {
+    created_at: addBillForm.elements.date.value,
+    patient_id: selectedPatient.id,
+    nurse_id: isLogin.id,
+    visit: addBillForm.elements.visit.value,
+    income: addBillForm.elements.income.value,
+    desc: addBillForm.elements.desc.value,
+    equipment: addBillForm.elements.equipment.value,
+  };
   patientFullname.innerHTML = selectedPatient.fullName;
   patientCodenum.innerHTML = selectedPatient.codeNum;
   patientTelnum.innerHTML = selectedPatient.telNum;
   patientAdderes.innerHTML = selectedPatient.adderes;
 
-  tbody.innerHTML = patientBillData
+  tbody.innerHTML = renderpatientBill(selectedPatient, patientBillData);
+
+  console.log(patientBillData);
+  patientBill.querySelector("#close-bill-btn").addEventListener("click", () => {
+    wrapper.classList.remove("shadow");
+    patientBill.classList.add("hidden");
+    tbody.innerHTML = "";
+    setTableContent(isLogin, patients);
+  });
+
+  patientBill.querySelector("#add-bill").addEventListener("cilck", () => {
+    addBill(newBillData);
+    console.log("new");
+    console.log("new", newBillData);
+  });
+}
+
+function renderpatientBill(patientid, bills) {
+  let dialogBillContent = bills
     .filter((bill) => {
-      return bill.patient_id == selectedPatient.id;
+      return bill.patient_id == patientid.id;
     })
     .map((bill, i) => {
       return `
@@ -334,13 +362,21 @@ async function openEditPatientBill(e, patients, patientBillData) {
     `;
     })
     .join("");
+  return dialogBillContent;
+}
 
-  console.log(patientBillData);
-  patientBill.querySelector("#close-bill-btn").addEventListener("click", () => {
-    wrapper.classList.remove("shadow");
-    patientBill.classList.add("hidden");
-    tbody.innerHTML = "";
+async function addBill(billData) {
+  console.log("add bill");
+  let { error } = await database.from("bills").insert([billData], {
+    returning: "minimal",
   });
+
+  if (error) {
+    errorManage(error);
+  } else {
+    let patients = isLogin ? await getPatientsData(isLogin.id) : [];
+    renderpatientBill(isLogin, patients);
+  }
 }
 
 //get datas from bills table and return data or null

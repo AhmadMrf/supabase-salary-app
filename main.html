@@ -143,12 +143,23 @@
         </div>
         <div class="patient-account hidden">
           <div class="patient-account-info">
-            <span>نام بیمار : <span id="patient-fullname">بیمار 1</span></span>
-            <span>کد ملی : <span id="patient-codenum">111111111</span></span>
-            <span
-              >شماره تماس : <span id="patient-telnum">0911111111</span></span
-            >
-            <span>آدرس : <span id="patient-adderes">مشهد</span></span>
+            <span>نام بیمار : <span id="patient-fullname"></span></span>
+            <span>کد ملی : <span id="patient-codenum"></span></span>
+            <span>شماره تماس : <span id="patient-telnum"></span></span>
+            <span>آدرس : <span id="patient-adderes"></span></span>
+          </div>
+          <div class="patient-add-bill">
+            <form action="#">
+              <div class="info">
+                <input type="datetime-local" name="date" placeholder="تاریخ" />
+                <input type="number" name="visit" placeholder="ویزیت" />
+                <input type="number" name="equipment" placeholder="مصرفی" />
+                <input type="number" name="income" placeholder="دریافتی" />
+                <label for="desc">توضیحات</label>
+                <textarea name="desc" id="desc" cols="30" rows="10"></textarea>
+                <button id="add-bill" type="button" href="#">افزودن</button>
+              </div>
+            </form>
           </div>
           <div class="patient-account-bill">
             <table>
@@ -161,18 +172,17 @@
                   <th class="column5">دریافتی</th>
                   <th class="column6"></th>
                 </tr>
-
-                <tr>
+              </thead>
+              <tbody>
+                <!-- <tr>
                   <td class="column1"></td>
                   <td class="column2"><input type="date" /></td>
                   <td class="column3"><input step="5" type="number" /></td>
                   <td class="column4"><input step="5" type="number" /></td>
                   <td class="column5"><input step="5" type="number" /></td>
                   <td id="add-cost" class="column6"><button>افزودن</button></td>
-                </tr>
-              </thead>
-              <tbody>
-               <!--  <tr>
+                </tr> -->
+                <!--  <tr>
                  <td class="column1">1</td>
                  <td class="column2">1/5/1401</td>
                  <td class="column3">400</td>
