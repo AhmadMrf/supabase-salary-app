@@ -19,7 +19,7 @@ let addPatientForm;
 
 let isLogin = database.auth.user(); // return null or user data
 
-console.log('islog?',isLogin);
+console.log("islog?", isLogin);
 
 //toggle between sign in and sign up form
 loginContent.addEventListener("click", (e) => {
@@ -95,12 +95,11 @@ async function signOutAccount() {
 //manage errors
 function errorManage(errorMessage) {
   console.log("error manage");
-  errorBox.style.display = 'block'
+  errorBox.style.display = "block";
   errorBox.innerHTML = errorMessage.message;
   setTimeout(() => {
     errorBox.innerHTML = "";
-  errorBox.style.display = 'none'
-    
+    errorBox.style.display = "none";
   }, 5000);
   console.log(errorMessage, "مدیریت خطا");
 }
@@ -223,39 +222,37 @@ function setLoginContent(loginState, patients) {
   }
 }
 
-
 //get user data (loginState) or null and patients (patients array) as argument
 // and fill rows based on patients info from database
 async function setTableContent(loginState, patients) {
   if (loginState) {
     if (patients) {
-      
-      let bills = await getPatientBillData()
-      console.log('bills all', bills);
-     
-    function totalCost(id){
-      let patientBill= bills.filter(bill=>bill.patient_id==id)
-      let patientCost = patientBill.reduce((totalBill, bill)=>{
-        return {
-          cost : bill.visit + bill.equipment + (totalBill.cost??0),
-          incomes : bill.income + (totalBill.incomes??0)
-        }
-      },{})
-      console.log('total',patientCost);
-      return {...patientCost,billsLength:patientBill.length}
-    }
-    
-let cost,incomes,billsLength
+      let bills = await getPatientBillData();
+      console.log("bills all", bills);
+
+      function totalCost(id) {
+        let patientBill = bills.filter((bill) => bill.patient_id == id);
+        let patientCost = patientBill.reduce((totalBill, bill) => {
+          return {
+            cost: bill.visit + bill.equipment + (totalBill.cost ?? 0),
+            incomes: bill.income + (totalBill.incomes ?? 0),
+          };
+        }, {});
+        console.log("total", patientCost);
+        return { ...patientCost, billsLength: patientBill.length };
+      }
+
+      let cost, incomes, billsLength;
 
       tbody.innerHTML = patients
         .map((patient, i) => {
-          ({cost,incomes,billsLength} = totalCost(patient.id))
+          ({ cost, incomes, billsLength } = totalCost(patient.id));
           return (patient = `<tr>
           <td class="column1">${+i + 1}</td>
           <td class="column2">${patient.fullName}</td>
           <td class="column3">${patient.telNum}</td>
-          <td class="column4">${cost??0}</td>
-          <td class="column5">${incomes??0}</td>
+          <td class="column4">${cost ?? 0}</td>
+          <td class="column5">${incomes ?? 0}</td>
           <td class="column6"><button data-patientid="${
             patient.id
           }" > صورت حساب <span>(${billsLength})<span> </button></td>
@@ -263,19 +260,19 @@ let cost,incomes,billsLength
         })
         .join("");
 
-      let addCost = document.querySelector('#add-cost')
-      
+      let addCost = document.querySelector("#add-cost");
+
       let editBtns = tbody.querySelectorAll("button");
       editBtns.forEach((editBtn) => {
         editBtn.addEventListener("click", (e) =>
           openEditPatientBill(e, patients, bills)
         );
       });
-      
-      addCost.addEventListener('click', ()=>{
+
+      addCost.addEventListener("click", () => {
         console.log(777);
-      })
-      
+      });
+
       if (!patients.length) {
         tbody.innerHTML = `<tr>
        <td class="fake-td" colspan="4">شما هنوز بیماری ثبت نکرده اید . </td>
@@ -297,6 +294,9 @@ let cost,incomes,billsLength
   }
 }
 
+//with click on any patient is opening a dialog box with that patient info
+//so filter and show bills that are relative to that patient
+// and add event listener to close btn
 async function openEditPatientBill(e, patients, patientBillData) {
   wrapper.classList.add("shadow");
   patientBill.classList.remove("hidden");
@@ -304,7 +304,7 @@ async function openEditPatientBill(e, patients, patientBillData) {
     (patient) => patient.id == e.target.dataset.patientid
   );
 
-const tbody = patientBill.querySelector('tbody')
+  const tbody = patientBill.querySelector("tbody");
   const patientFullname = patientBill.querySelector("#patient-fullname");
   const patientCodenum = patientBill.querySelector("#patient-codenum");
   const patientTelnum = patientBill.querySelector("#patient-telnum");
@@ -315,45 +315,46 @@ const tbody = patientBill.querySelector('tbody')
   patientTelnum.innerHTML = selectedPatient.telNum;
   patientAdderes.innerHTML = selectedPatient.adderes;
 
-
-tbody.innerHTML = patientBillData
-.filter(bill=>{
-  return bill.patient_id == selectedPatient.id
-})
-.map((bill, i)=>{
-  return (
-    `
+  tbody.innerHTML = patientBillData
+    .filter((bill) => {
+      return bill.patient_id == selectedPatient.id;
+    })
+    .map((bill, i) => {
+      return `
     <tr>
-        <td class="column1">${+i+1}</td>
-        <td class="column2">${new Date(bill.created_at).toLocaleString('fa')}</td>
+        <td class="column1">${+i + 1}</td>
+        <td class="column2">${new Date(bill.created_at).toLocaleString(
+          "fa"
+        )}</td>
         <td class="column3">${bill.visit}</td>
         <td class="column4">${bill.equipment}</td>
         <td class="column5">${bill.income}</td>
         <td class="column6"><button data-bill="${bill.id}" >اصلاح</button></td>
     </tr>
-    `
-    )
-}).join('')
+    `;
+    })
+    .join("");
 
   console.log(patientBillData);
   patientBill.querySelector("#close-bill-btn").addEventListener("click", () => {
     wrapper.classList.remove("shadow");
     patientBill.classList.add("hidden");
-    tbody.innerHTML = ''
+    tbody.innerHTML = "";
   });
 }
 
-async function getPatientBillData(patientId){
+//get datas from bills table and return data or null
+async function getPatientBillData(patientId) {
   console.log("get bill");
-  let {data, error} = await database.from("bills")
+  let { data, error } = await database.from("bills");
   // .select('*')
   // .eq('patient_id',patientId);
-  
+
   if (error) {
     errorManage(error);
     return null;
   }
-  
+
   return data;
 }
 
@@ -380,6 +381,7 @@ function setAddPatientTab(loginState) {
   }
 }
 
+// add new patient and rerender table again
 async function addPatient() {
   console.log("add");
   let fullName = addPatientForm.elements.fullName.value;
@@ -407,7 +409,7 @@ async function addPatient() {
 async function setupApp(loginState) {
   console.log("setup");
   let patients = loginState ? await getPatientsData(loginState.id) : [];
-  
+
   console.log("patients", patients);
 
   setLabelLoginTab(loginState);

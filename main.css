@@ -11,7 +11,6 @@
 .limiter {
   width: 100%;
   margin: 0 auto;
-  font-family: 'Times New Roman', Times, serif;
 }
 .limiter.shadow::after {
   content: "";
@@ -68,7 +67,6 @@
   text-align: center;
   width: min(100%, 40rem);
   justify-content: space-between;
-  padding-top: 0;
 }
 
 .hidden-input {
@@ -413,9 +411,6 @@ a {
   overflow-y: auto;
   position: relative;
   border: 2px dashed rgb(198, 193, 212);
-  
-}
-.patient-account-bill table{
 }
 .patient-account-bill table thead {
   position: sticky;
