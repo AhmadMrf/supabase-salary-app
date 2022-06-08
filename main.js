@@ -171,9 +171,8 @@ function setLoginContent(loginState, patients) {
         <div class="panel-info">
           <span>${loginState.user_metadata.fullName}</span>
           <span>${loginState.user_metadata.job}</span>
-          <span>تعداد بیماران : <span id="patient-number" >${
-            patients ? patients.length : "-"
-          }</span></span>
+          <span>تعداد بیماران : <span id="patient-number" >${patients ? patients.length : "-"
+      }</span></span>
         </div>
         <button name="signoutBtn" type="button" href="#">خروج</button>
       </div>
@@ -228,7 +227,6 @@ async function setTableContent(loginState, patients) {
   if (loginState) {
     if (patients) {
       let bills = await getPatientBillData();
-      console.log("bills all", bills);
 
       function totalCost(id) {
         let patientBill = bills.filter((bill) => bill.patient_id == id);
@@ -252,9 +250,8 @@ async function setTableContent(loginState, patients) {
           <td class="column3">${patient.telNum}</td>
           <td class="column4">${cost ?? 0}</td>
           <td class="column5">${incomes ?? 0}</td>
-          <td class="column6"><button data-patientid="${
-            patient.id
-          }" > صورت حساب <span>(${billsLength})<span> </button></td>
+          <td class="column6"><button data-patientid="${patient.id
+            }" > صورت حساب <span>(${billsLength})<span> </button></td>
           </tr>`);
         })
         .join("");
@@ -293,6 +290,8 @@ async function setTableContent(loginState, patients) {
   }
 }
 
+
+const dialogBillTbody = patientBill.querySelector("tbody");
 //with click on any patient is opening a dialog box with that patient info
 //so filter and show bills that are relative to that patient
 // and add event listener to close btn
@@ -303,12 +302,13 @@ async function openEditPatientBill(e, patients, patientBillData) {
     (patient) => patient.id == e.target.dataset.patientid
   );
 
-  const tbody = patientBill.querySelector("tbody");
   const patientFullname = patientBill.querySelector("#patient-fullname");
   const patientCodenum = patientBill.querySelector("#patient-codenum");
   const patientTelnum = patientBill.querySelector("#patient-telnum");
   const patientAdderes = patientBill.querySelector("#patient-adderes");
   const addBillForm = patientBill.querySelector("form");
+  const closeDialogBillBtn = patientBill.querySelector("#close-bill-btn")
+  const addNewBillBtn = patientBill.querySelector("#add-bill")
   // const addBillFormBtn = addBillForm.querySelector("button");
 
 
@@ -317,49 +317,48 @@ async function openEditPatientBill(e, patients, patientBillData) {
   patientTelnum.innerHTML = selectedPatient.telNum;
   patientAdderes.innerHTML = selectedPatient.adderes;
 
-
-  tbody.innerHTML = renderpatientBill(selectedPatient, patientBillData);
-
-  console.log(patientBillData);
-  patientBill.querySelector("#close-bill-btn").addEventListener("click", () => {
+   renderpatientBill(selectedPatient.id, patientBillData);
+  
+  function closeDialogBill(){
     wrapper.classList.remove("shadow");
     patientBill.classList.add("hidden");
-    tbody.innerHTML = "";
+    dialogBillTbody.innerHTML = "";
     setTableContent(isLogin, patients);
-  });
+   closeDialogBillBtn.removeEventListener('click',closeDialogBill)
+  }
 
-  patientBill.querySelector('#add-bill').addEventListener("click", () => {
-      let newBillData = {
-        created_at: addBillForm.elements.date.value,
-        patient_id: selectedPatient.id,
-        nurse_id: isLogin.id,
-        visit: addBillForm.elements.visit.value,
-        income: addBillForm.elements.income.value,
-        desc: addBillForm.elements.desc.value,
-        equipment: addBillForm.elements.equipment.value,
-      };
-    console.log(newBillData);
-      
+  function addNewBill(){
+    let newBillData = {
+      created_at: addBillForm.elements.date.value,
+      patient_id: selectedPatient.id,
+      nurse_id: database.auth.user().id,
+      visit: addBillForm.elements.visit.value,
+      income: addBillForm.elements.income.value,
+      desc: addBillForm.elements.desc.value,
+      equipment: addBillForm.elements.equipment.value,
+    };
     addBill(newBillData);
-      
-    
-    // console.log("new", newBillData);
-  });
+   addNewBillBtn.removeEventListener('click',addNewBill)
+  }
+
+  closeDialogBillBtn.addEventListener("click", closeDialogBill);
+  addNewBillBtn.addEventListener("click", addNewBill);
+  
 }
 
 function renderpatientBill(patientid, bills) {
   console.log('renderbill');
   let dialogBillContent = bills
     .filter((bill) => {
-      return bill.patient_id == patientid.id;
+      return bill.patient_id == patientid;
     })
     .map((bill, i) => {
       return `
     <tr>
         <td class="column1">${+i + 1}</td>
         <td class="column2">${new Date(bill.created_at).toLocaleString(
-          "fa"
-        )}</td>
+        "fa"
+      )}</td>
         <td class="column3">${bill.visit}</td>
         <td class="column4">${bill.equipment}</td>
         <td class="column5">${bill.income}</td>
@@ -368,12 +367,12 @@ function renderpatientBill(patientid, bills) {
     `;
     })
     .join("");
-  return dialogBillContent;
+    dialogBillTbody.innerHTML = dialogBillContent
 }
 
 async function addBill(billData) {
   console.log("add bill");
-  let {patient_id:patientid} = billData
+  let { patient_id: patientid } = billData
   let { error } = await database.from("bills").insert([billData], {
     returning: "minimal",
   });
@@ -381,8 +380,8 @@ async function addBill(billData) {
   if (error) {
     errorManage(error);
   } else {
-    let bills = await getPatientBillData(patientid);
-    renderpatientBill(patientid, bills);
+    let newBills = await getPatientBillData(patientid);
+    renderpatientBill(patientid, newBills);
   }
 }
 
@@ -463,3 +462,11 @@ async function setupApp(loginState) {
 
   setTableContent(loginState, patients);
 }
+
+
+// addNewBillBtn.addEventListener('click', ()=>{
+  
+// })
+// closeBillsDialogBoxBtn.addEventListener('click', ()=>{
+  
+// })
