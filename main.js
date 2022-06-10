@@ -12,6 +12,8 @@ const tbody = document.querySelector("table > tbody");
 let errorBox = document.querySelector("#error-box");
 const patientBill = document.querySelector(".patient-account");
 const wrapper = document.querySelector(".limiter");
+const dialogBillTbody = patientBill.querySelector("tbody");
+
 let signinForm; //declare in setLoginContent func
 let signupForm; //declare in setLoginContent func
 let signoutBtn; //declare in setLoginContent func
@@ -107,7 +109,7 @@ function errorManage(errorMessage) {
 //give user id
 //if success return data form database
 //if error return null and call errorManage func
-async function getPatientsData(id) {
+async function getPatientsData() {
   console.log("get");
   let { data, error } = await database.from("patients");
   if (error) {
@@ -271,8 +273,8 @@ async function setTableContent(loginState, patients) {
       let deletePatients = tbody.querySelectorAll(".delete-patient");
       deletePatients.forEach((deletePatient) => {
         deletePatient.addEventListener("click", (e) =>
-        deletePatientFromDb(e.target.dataset.patientid)
-        // console.log(e.target.dataset.patientid)
+          deletePatientFromDb(e.target.dataset.patientid)
+          // console.log(e.target.dataset.patientid)
         );
       });
       let editBtns = tbody.querySelectorAll(".edit-bill");
@@ -298,7 +300,7 @@ async function setTableContent(loginState, patients) {
       </tr>`;
       document
         .querySelector("#refreshBtn")
-        .addEventListener("click", () => setupApp(isLogin));
+        .addEventListener("click", () => setupApp(database.auth.user()));
     }
   } else {
     tbody.innerHTML =
@@ -306,8 +308,6 @@ async function setTableContent(loginState, patients) {
   }
 }
 
-
-const dialogBillTbody = patientBill.querySelector("tbody");
 //with click on any patient is opening a dialog box with that patient info
 //so filter and show bills that are relative to that patient
 // and add event listener to close btn
@@ -333,18 +333,18 @@ async function openPatientBill(e, patients, patientBillData) {
   patientTelnum.innerHTML = selectedPatient.telNum;
   patientAdderes.innerHTML = selectedPatient.adderes;
 
-   renderpatientBill(selectedPatient.id, patientBillData);
-  
-  function closeDialogBill(){
+  renderpatientBill(selectedPatient.id, patientBillData);
+
+  function closeDialogBill() {
     wrapper.classList.remove("shadow");
     patientBill.classList.add("hidden");
     dialogBillTbody.innerHTML = "";
-    setTableContent(isLogin, patients);
-    addNewBillBtn.removeEventListener('click',addNewBill)
-   closeDialogBillBtn.removeEventListener('click',closeDialogBill)
+    setTableContent(database.auth.user(), patients);
+    addNewBillBtn.removeEventListener('click', addNewBill)
+    closeDialogBillBtn.removeEventListener('click', closeDialogBill)
   }
 
-  function addNewBill(){
+  function addNewBill() {
     let newBillData = {
       created_at: addBillForm.elements.date.value,
       patient_id: selectedPatient.id,
@@ -355,15 +355,16 @@ async function openPatientBill(e, patients, patientBillData) {
       equipment: addBillForm.elements.equipment.value,
     };
     addBillToDb(newBillData);
-  
+
   }
-  
+
 
   closeDialogBillBtn.addEventListener("click", closeDialogBill);
   addNewBillBtn.addEventListener("click", addNewBill);
-  
+
 }
 
+//render table for each patient that selected . and add event listener on buttons
 function renderpatientBill(patientid, bills) {
   console.log('renderbill');
   let dialogBillContent = bills
@@ -389,32 +390,33 @@ function renderpatientBill(patientid, bills) {
     `;
     })
     .join("");
-    
-    dialogBillTbody.innerHTML = dialogBillContent
 
-    let editBills = dialogBillTbody.querySelectorAll(".edit-bill");
-      editBills.forEach((editBill) => {
-        editBill.addEventListener("click", (e) =>
-          openPatientBill(e, patients, bills)
-        );
-      });
-      let removeBills = dialogBillTbody.querySelectorAll(".delete-bill");
-      removeBills.forEach((removeBill) => {
-        removeBill.addEventListener("click", (e) =>
-        removeBillFromDb(e.target.dataset.bill, patientid)
-        );
-      });
+  dialogBillTbody.innerHTML = dialogBillContent
+
+  let editBills = dialogBillTbody.querySelectorAll(".edit-bill");
+  editBills.forEach((editBill) => {
+    editBill.addEventListener("click", (e) =>
+      openPatientBill(e, patients, bills)
+    );
+  });
+  let removeBills = dialogBillTbody.querySelectorAll(".delete-bill");
+  removeBills.forEach((removeBill) => {
+    removeBill.addEventListener("click", (e) =>
+      removeBillFromDb(e.target.dataset.bill, patientid)
+    );
+  });
 }
 
-async function removeBillFromDb(billid, patientid){
+//remove bill for each patient from bills table on database
+async function removeBillFromDb(billid, patientid) {
   console.log("delete bill");
 
   let { billData, billError } = await database
-  .from('bills')
-  .delete()
-  .match({ id: billid })
+    .from('bills')
+    .delete()
+    .match({ id: billid })
 
-  if(billError){
+  if (billError) {
     errorManage(billError);
   } else {
     let newBills = await getPatientBillData(patientid);
@@ -422,6 +424,7 @@ async function removeBillFromDb(billid, patientid){
   }
 }
 
+//add bill for each patient to bills table on database
 async function addBillToDb(billData) {
   console.log("add bill");
   let { patient_id: patientid } = billData
@@ -494,40 +497,43 @@ async function addPatientToDb() {
   if (error) {
     errorManage(error);
   } else {
-    let patients = isLogin ? await getPatientsData(isLogin.id) : [];
-    setLoginContent( database.auth.user(), patients);
-    setTableContent( database.auth.user(), patients);
+    let user = database.auth.user()
+    let patients = user ? await getPatientsData() : [];
+    setLoginContent(user, patients);
+    setTableContent(user, patients);
   }
 }
 
-async function deletePatientFromDb(patientId){
+//remove patient and bills
+async function deletePatientFromDb(patientId) {
   console.log("delete patient");
 
   let { billsData, billsError } = await database
-  .from('bills')
-  .delete()
-  .match({ patient_id: patientId })
+    .from('bills')
+    .delete()
+    .match({ patient_id: patientId })
 
   let { patientData, patientError } = await database
-  .from('patients')
-  .delete()
-  .match({ id: patientId })
+    .from('patients')
+    .delete()
+    .match({ id: patientId })
 
 
   if (patientError) {
     errorManage(patientError);
-  }else if(billsError){
+  } else if (billsError) {
     errorManage(billsError);
   } else {
+    let user = database.auth.user()
     let patients = await getPatientsData();
-    setLoginContent( database.auth.user(), patients);
-    setTableContent( database.auth.user(), patients);
+    setLoginContent(user, patients);
+    setTableContent(user, patients);
   }
 }
 
 async function setupApp(loginState) {
   console.log("setup");
-  let patients = loginState ? await getPatientsData(loginState.id) : [];
+  let patients = loginState ? await getPatientsData() : [];
 
   console.log("patients", patients);
 
@@ -539,11 +545,3 @@ async function setupApp(loginState) {
 
   setTableContent(loginState, patients);
 }
-
-
-// addNewBillBtn.addEventListener('click', ()=>{
-  
-// })
-// closeBillsDialogBoxBtn.addEventListener('click', ()=>{
-  
-// })
