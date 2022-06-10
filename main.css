@@ -12,6 +12,7 @@
   width: 100%;
   margin: 0 auto;
 }
+
 .limiter.shadow::after {
   content: "";
   display: block;
@@ -22,6 +23,7 @@
   top: 0;
   z-index: 1;
 }
+
 .container-table100 {
   width: 100%;
   min-height: 100vh;
@@ -49,17 +51,20 @@
   width: 100%;
   max-width: 1170px;
 }
+
 .form-wrap {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
 }
+
 .form-content {
   background-color: #fff;
   width: 100%;
   display: flex;
   justify-content: center;
 }
+
 .form-details {
   display: none;
   background-color: #fff;
@@ -72,28 +77,35 @@
 .hidden-input {
   display: none;
 }
-#nurse:checked ~ .form-content div[data-form="nurse"] {
+
+#nurse:checked~.form-content div[data-form="nurse"] {
   display: flex;
 }
-#nurse:checked ~ .form-titles label[for="nurse"] {
+
+#nurse:checked~.form-titles label[for="nurse"] {
   background-color: #fff;
   color: #222;
 }
-#add-patient:checked ~ .form-content div[data-form="add-patient"] {
+
+#add-patient:checked~.form-content div[data-form="add-patient"] {
   display: block;
 }
-#add-patient:checked ~ .form-titles label[for="add-patient"] {
+
+#add-patient:checked~.form-titles label[for="add-patient"] {
   background-color: #fff;
   color: #222;
 }
-#more:checked ~ .form-content div[data-form="more"] {
+
+#more:checked~.form-content div[data-form="more"] {
   display: block;
 }
-#more:checked ~ .form-titles label[for="more"] {
+
+#more:checked~.form-titles label[for="more"] {
   background-color: #fff;
   color: #222;
 }
-#hidden:checked ~ .form-titles label {
+
+#hidden:checked~.form-titles label {
   border-radius: 10px;
 }
 
@@ -101,6 +113,7 @@
   display: flex;
   gap: 2px;
 }
+
 label[for="hidden"] {
   flex: 0 0 2rem;
 }
@@ -119,10 +132,6 @@ table * {
   position: relative;
 }
 
-table td,
-table th {
-  padding-left: 8px;
-}
 
 table thead tr {
   height: 60px;
@@ -140,9 +149,11 @@ table tbody tr:last-child {
 table td,
 table th {
   text-align: center;
+  padding-left: 8px;
+  height: 100%;
 }
 
-table td.l,
+/* table td.l,
 table th.l {
   text-align: right;
 }
@@ -155,7 +166,7 @@ table th.c {
 table td.r,
 table th.r {
   text-align: center;
-}
+} */
 
 .table100-head th {
   font-family: OpenSans-Regular;
@@ -177,28 +188,38 @@ tbody tr {
   line-height: 1.2;
   font-weight: unset;
 }
+
 tbody tr.paid {
   background-color: rgb(129, 255, 207);
 }
+
 tbody tr label {
   border-radius: 10px;
   background-color: rgb(140, 187, 161);
   cursor: pointer;
 }
+
 tbody tr:hover {
   color: #555555;
   background-color: rgb(198, 193, 212);
   cursor: default;
 }
-.column1 {
+
+/* .column1 {
   width: 100px;
-}
+} */
 
 .column2 {
-  width: 160px;
+  min-width: 100px;
 }
 
-.column3 {
+.column3,
+.column4,
+.column5 {
+  min-width: 100px;
+}
+
+/* .column3 {
   width: 200px;
 }
 
@@ -208,10 +229,14 @@ tbody tr:hover {
 
 .column5 {
   width: 120px;
-}
+} */
 
 .column6 {
-  width: 230px;
+  /* width: 230px; */
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding-top: 5px;
 }
 
 form {
@@ -221,11 +246,11 @@ form {
 .nurse-data {
   display: none;
 }
+
 .nurse-data.active {
   display: initial;
 }
 
-button,
 label {
   padding: 10px 5px;
   border-radius: 5px;
@@ -238,16 +263,20 @@ label {
   font-weight: 400;
   width: 50%;
 }
+
 label {
   border-radius: 10px 10px 0 0;
   text-align: center;
 }
+
 button:hover {
   background: rgba(54, 48, 74, 0.8);
 }
+
 .form-wrap button {
   background-color: rgb(140, 187, 161);
 }
+
 .form-wrap button:hover {
   background-color: rgb(140, 187, 140);
 }
@@ -259,9 +288,11 @@ button:hover {
   justify-content: space-between;
   width: 100%;
 }
+
 .panel-account button {
   flex: 0.5;
 }
+
 .panel-info {
   display: flex;
   align-items: start;
@@ -271,7 +302,8 @@ button:hover {
   text-align: right;
   flex: 1;
 }
-.panel-info > span {
+
+.panel-info>span {
   border-right: 5px solid rgba(54, 48, 74, 0.5);
   padding-right: 10px;
 }
@@ -285,6 +317,7 @@ form {
   background: #fff;
   position: relative;
 }
+
 form.hidden::after {
   content: attr(data-type);
   display: flex;
@@ -303,6 +336,7 @@ form.hidden::after {
 form.hidden:hover::after {
   background-color: rgb(140, 187, 140);
 }
+
 form::after {
   transition: all 0.3s ease;
   content: "";
@@ -312,6 +346,7 @@ form::after {
   transform: scale(0.3);
   position: absolute;
 }
+
 .info {
   width: min(100%, 40rem);
   display: flex;
@@ -330,6 +365,10 @@ input::placeholder {
   color: #000;
 }
 
+table button {
+  height: 40px;
+}
+
 button {
   padding: 10px 5px;
   border-radius: 5px;
@@ -341,14 +380,18 @@ button {
   font-size: 15px;
   font-weight: 400;
   width: min(80%, 20rem);
+  /* min-width: max-content; */
   cursor: pointer;
 }
+
 button:hover {
   background-color: rgb(140, 187, 140);
 }
+
 a {
   font-size: 0.7rem;
 }
+
 #error-box {
   text-align: center;
   background-color: #fff;
@@ -392,27 +435,33 @@ a {
   border: 1px dotted;
   padding: 0.5rem;
 }
+
 .patient-add-bill label {
   all: unset;
   flex: 1 1;
   width: 5rem;
   color: #555555;
 }
+
 .patient-add-bill button {
   flex: 1 0;
 }
+
 .patient-add-bill textarea {
   padding: 0.5rem 1rem;
   min-width: 6rem;
   flex: 2 2;
 }
+
 .add-bill-inputs {
   display: flex;
   flex: 2 1 50%;
 }
+
 .patient-account.hidden {
   display: none;
 }
+
 .patient-account-info {
   display: flex;
   flex-wrap: wrap;
@@ -420,20 +469,46 @@ a {
   column-gap: 1.5rem;
   padding: 1rem 0;
 }
-.patient-account-info > span {
+
+.patient-account-info>span {
   padding: 10px 5px;
   color: #555555;
 }
+
 .patient-account-bill {
   overflow-y: auto;
   position: relative;
   border: 2px dashed rgb(198, 193, 212);
 }
+
+tbody .delete-bill,
+tbody .delete-patient,
+tbody .edit-patient {
+  background-color: #ff6767;
+  width: min-content;
+}
+
+tbody .edit-patient {
+  background-color: #5f7aff;
+}
+
+.patient-account-bill .delete-bill {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+
+.patient-account-bill tbody tr:hover .delete-bill {
+  visibility: visible;
+  opacity: 1;
+}
+
 .patient-account-bill table thead {
   position: sticky;
   top: 0;
   z-index: 1;
 }
+
 /* 
 .patient-account-bill table thead tr:last-child {
   background-color: #fff;
@@ -446,48 +521,62 @@ a {
   background-color: rgb(140, 173, 197);
 } */
 
-.patient-account > button {
+.patient-account>button {
   width: 100px;
   display: block;
   margin: 10px auto;
 }
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 750px) {
   /* table {
     display: block;
   } */
 
-  table > *,
+  table>*,
   table tr,
   table td,
   table th {
     display: block;
   }
+
   .patient-account-info {
     padding: 0;
   }
+
   .table100 table thead {
     display: none;
   }
+
+  .patient-account-bill .delete-bill {
+    visibility: visible;
+    opacity: 1;
+  }
+
   .patient-account-bill {
     border-top: 2px solid #36304a;
   }
+
   .patient-account-bill table thead {
     top: -230px;
   }
+
   .patient-account-bill table thead tr:first-child {
     display: none;
   }
+
   .patient-account-bill table thead tr:last-child {
     padding-top: 0;
   }
+
   .patient-add-bill form {
     flex-wrap: wrap;
   }
+
   .add-bill-inputs {
     flex-basis: 100%;
     width: 100%;
   }
+
   table tbody tr,
   .patient-account-bill table thead tr {
     height: auto;
@@ -497,9 +586,11 @@ a {
     align-items: center;
     margin-bottom: 2px;
   }
+
   .patient-account-bill table thead tr td {
     border: 0;
   }
+
   table tbody tr:hover {
     background-color: #e4e4e4;
   }
@@ -515,6 +606,7 @@ a {
     background-color: #36304a;
     color: #fff;
   }
+
   table tbody tr td:last-child,
   .patient-account-bill table thead tr td:last-child {
     margin-bottom: 0;
@@ -533,6 +625,7 @@ a {
     right: 30px;
     top: 0;
   }
+
   table tbody tr td:first-child::before {
     color: #fff;
   }
@@ -587,14 +680,17 @@ a {
     padding: 0;
     width: 60%;
   }
+
   table tbody tr td.fake-td::before {
     content: "";
   }
+
   .column4,
   .column5,
   .column6 {
     text-align: center;
   }
+
   .column6 {
     /* width: 120px; */
   }
@@ -620,6 +716,7 @@ a {
     padding-left: 15px;
     padding-right: 15px;
   }
+
   .form-details {
     flex-direction: column;
   }
