@@ -150,15 +150,22 @@
           </div>
           <div class="patient-add-bill">
             <form action="#">
-              <div class="info">
-                <input type="datetime-local" name="date" placeholder="تاریخ" />
-                <input type="number" name="visit" placeholder="ویزیت" />
-                <input type="number" name="equipment" placeholder="مصرفی" />
-                <input type="number" name="income" placeholder="دریافتی" />
-                <label for="desc">توضیحات</label>
-                <textarea name="desc" id="desc" cols="30" rows="10"></textarea>
-                <button id="add-bill" type="button" href="#">افزودن</button>
+              <div class="add-bill-inputs">
+                <label
+                  >تاریخ :<input type="date" name="date" placeholder="تاریخ"
+                /></label>
+                <label
+                  >ویزیت :<input type="number" name="visit" placeholder="0"
+                /></label>
+                <label
+                  >مصرفی :<input type="number" name="equipment" placeholder="0"
+                /></label>
+                <label
+                  >دریافتی :<input type="number" name="income" placeholder="0"
+                /></label>
               </div>
+              <textarea placeholder="توضیحات" name="desc" id="desc"></textarea>
+              <button id="add-bill" type="button" href="#">افزودن</button>
             </form>
           </div>
           <div class="patient-account-bill">

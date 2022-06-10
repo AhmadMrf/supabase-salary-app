@@ -218,22 +218,6 @@ form {
   background: #fff;
 }
 
-.info {
-  display: flex;
-  flex-direction: column;
-}
-
-input {
-  padding: 5px;
-  margin-bottom: 30px;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid #bbb;
-}
-
-input::placeholder {
-  color: #000;
-}
 .nurse-data {
   display: none;
 }
@@ -393,6 +377,39 @@ a {
   border: 1px dashed black;
   z-index: 2;
 }
+
+.patient-add-bill form {
+  display: flex;
+  align-items: flex-end;
+  flex-flow: nowrap;
+}
+
+.patient-add-bill input {
+  margin: 0;
+  margin-top: 0.5rem;
+  flex: 1 1;
+  width: 100%;
+  border: 1px dotted;
+  padding: 0.5rem;
+}
+.patient-add-bill label {
+  all: unset;
+  flex: 1 1;
+  width: 5rem;
+  color: #555555;
+}
+.patient-add-bill button {
+  flex: 1 0;
+}
+.patient-add-bill textarea {
+  padding: 0.5rem 1rem;
+  min-width: 6rem;
+  flex: 2 2;
+}
+.add-bill-inputs {
+  display: flex;
+  flex: 2 1 50%;
+}
 .patient-account.hidden {
   display: none;
 }
@@ -417,12 +434,7 @@ a {
   top: 0;
   z-index: 1;
 }
-.patient-account-bill table input {
-  width: 100%;
-  text-align: center;
-  color: inherit;
-  margin: 0;
-}
+/* 
 .patient-account-bill table thead tr:last-child {
   background-color: #fff;
   border-bottom: 2px solid #36304a;
@@ -432,7 +444,7 @@ a {
 }
 .patient-account-bill table thead tr:last-child button:hover {
   background-color: rgb(140, 173, 197);
-}
+} */
 
 .patient-account > button {
   width: 100px;
@@ -468,6 +480,13 @@ a {
   }
   .patient-account-bill table thead tr:last-child {
     padding-top: 0;
+  }
+  .patient-add-bill form {
+    flex-wrap: wrap;
+  }
+  .add-bill-inputs {
+    flex-basis: 100%;
+    width: 100%;
   }
   table tbody tr,
   .patient-account-bill table thead tr {
