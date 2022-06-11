@@ -49,12 +49,12 @@ async function signInAccount() {
     email,
     password,
   });
-  
+
   if (error) {
     errorManage(error);
-    return null
-  }else{
-    signinForm.reset()
+    return null;
+  } else {
+    signinForm.reset();
     return user;
   }
 }
@@ -86,9 +86,9 @@ async function signUpAccount() {
   );
   if (error) {
     errorManage(error);
-    return null
-  }else{
-    signupForm.reset()
+    return null;
+  } else {
+    signupForm.reset();
     return user;
   }
 }
@@ -179,8 +179,9 @@ function setLoginContent(loginState, patients) {
         <div class="panel-info">
           <span>${loginState.user_metadata.fullName}</span>
           <span>${loginState.user_metadata.job}</span>
-          <span>تعداد بیماران : <span id="patient-number" >${patients ? patients.length : "-"
-      }</span></span>
+          <span>تعداد بیماران : <span id="patient-number" >${
+            patients ? patients.length : "-"
+          }</span></span>
         </div>
         <button name="signoutBtn" type="button" href="#">خروج</button>
       </div>
@@ -259,9 +260,14 @@ async function setTableContent(loginState, patients) {
           <td class="column4">${cost ?? 0}</td>
           <td class="column5">${incomes ?? 0}</td>
           <td class="column6">
-            <button class="delete-patient" data-patientid="${patient.id}" >حذف</button>
-            <button class="edit-patient" data-patientid="${patient.id}" >اصلاح</button>
-            <button class="edit-bill" data-patientid="${patient.id
+            <button class="delete-patient" data-patientid="${
+              patient.id
+            }" >حذف</button>
+            <button class="edit-patient" data-patientid="${
+              patient.id
+            }" >اصلاح</button>
+            <button class="edit-bill" data-patientid="${
+              patient.id
             }" > صورت حساب <span>(${billsLength})<span> </button></td>
           </tr>`);
         })
@@ -278,8 +284,9 @@ async function setTableContent(loginState, patients) {
 
       let deletePatients = tbody.querySelectorAll(".delete-patient");
       deletePatients.forEach((deletePatient) => {
-        deletePatient.addEventListener("click", (e) =>
-          deletePatientFromDb(e.target.dataset.patientid)
+        deletePatient.addEventListener(
+          "click",
+          (e) => deletePatientFromDb(e.target.dataset.patientid)
           // console.log(e.target.dataset.patientid)
         );
       });
@@ -329,10 +336,9 @@ async function openPatientBill(e, patients, patientBillData) {
   const patientTelnum = patientBill.querySelector("#patient-telnum");
   const patientAdderes = patientBill.querySelector("#patient-adderes");
   const addBillForm = patientBill.querySelector("form");
-  const closeDialogBillBtn = patientBill.querySelector("#close-bill-btn")
-  const addNewBillBtn = patientBill.querySelector("#add-bill")
+  const closeDialogBillBtn = patientBill.querySelector("#close-bill-btn");
+  const addNewBillBtn = patientBill.querySelector("#add-bill");
   // const addBillFormBtn = addBillForm.querySelector("button");
-
 
   patientFullname.innerHTML = selectedPatient.fullName;
   patientCodenum.innerHTML = selectedPatient.codeNum;
@@ -346,8 +352,8 @@ async function openPatientBill(e, patients, patientBillData) {
     patientBill.classList.add("hidden");
     dialogBillTbody.innerHTML = "";
     setTableContent(database.auth.user(), patients);
-    addNewBillBtn.removeEventListener('click', addNewBill)
-    closeDialogBillBtn.removeEventListener('click', closeDialogBill)
+    addNewBillBtn.removeEventListener("click", addNewBill);
+    closeDialogBillBtn.removeEventListener("click", closeDialogBill);
   }
 
   async function addNewBill() {
@@ -360,33 +366,29 @@ async function openPatientBill(e, patients, patientBillData) {
       desc: addBillForm.elements.desc.value,
       equipment: addBillForm.elements.equipment.value,
     };
-    
+
     await addBillToDb(newBillData);
-    addBillForm.reset()
-
+    addBillForm.reset();
   }
-
 
   closeDialogBillBtn.addEventListener("click", closeDialogBill);
   addNewBillBtn.addEventListener("click", addNewBill);
-
 }
 
 //render table for each patient that selected . and add event listener on buttons
 function renderpatientBill(patientid, bills) {
-  console.log('renderbill');
+  console.log("renderbill");
   let dialogBillContent = bills
     .filter((bill) => {
       return bill.patient_id == patientid;
     })
     .map((bill, i) => {
-
       return `
     <tr>
         <td class="column1">${+i + 1}</td>
         <td class="column2">${new Date(bill.created_at).toLocaleString(
-        "fa"
-      )}</td>
+          "fa"
+        )}</td>
         <td class="column3">${bill.visit}</td>
         <td class="column4">${bill.equipment}</td>
         <td class="column5">${bill.income}</td>
@@ -399,20 +401,26 @@ function renderpatientBill(patientid, bills) {
     })
     .join("");
 
-  dialogBillTbody.innerHTML = dialogBillContent
+  if (dialogBillContent) {
+    dialogBillTbody.innerHTML = dialogBillContent;
 
-  let editBills = dialogBillTbody.querySelectorAll(".edit-bill");
-  editBills.forEach((editBill) => {
-    editBill.addEventListener("click", (e) =>
-      openPatientBill(e, patients, bills)
-    );
-  });
-  let removeBills = dialogBillTbody.querySelectorAll(".delete-bill");
-  removeBills.forEach((removeBill) => {
-    removeBill.addEventListener("click", (e) =>
-      removeBillFromDb(e.target.dataset.bill, patientid)
-    );
-  });
+    let editBills = dialogBillTbody.querySelectorAll(".edit-bill");
+    editBills.forEach((editBill) => {
+      editBill.addEventListener("click", (e) =>
+        openPatientBill(e, patients, bills)
+      );
+    });
+    let removeBills = dialogBillTbody.querySelectorAll(".delete-bill");
+    removeBills.forEach((removeBill) => {
+      removeBill.addEventListener("click", (e) =>
+        removeBillFromDb(e.target.dataset.bill, patientid)
+      );
+    });
+  } else {
+    dialogBillTbody.innerHTML = `<tr>
+       <td colspan="6" class="">هنوز صورت حسابی ثبت نشده .</td>
+    </tr>`;
+  }
 }
 
 //remove bill for each patient from bills table on database
@@ -420,9 +428,9 @@ async function removeBillFromDb(billid, patientid) {
   console.log("delete bill");
 
   let { billData, billError } = await database
-    .from('bills')
+    .from("bills")
     .delete()
-    .match({ id: billid })
+    .match({ id: billid });
 
   if (billError) {
     errorManage(billError);
@@ -435,7 +443,7 @@ async function removeBillFromDb(billid, patientid) {
 //add bill for each patient to bills table on database
 async function addBillToDb(billData) {
   console.log("add bill");
-  let { patient_id: patientid } = billData
+  let { patient_id: patientid } = billData;
   let { error } = await database.from("bills").insert([billData], {
     returning: "minimal",
   });
@@ -444,7 +452,7 @@ async function addBillToDb(billData) {
     errorManage(error);
   } else {
     let newBills = await getPatientBillData(patientid);
-    
+
     renderpatientBill(patientid, newBills);
   }
 }
@@ -506,13 +514,12 @@ async function addPatientToDb() {
   if (error) {
     errorManage(error);
   } else {
-    let user = database.auth.user()
+    let user = database.auth.user();
     let patients = user ? await getPatientsData() : [];
-    
+
     setLoginContent(user, patients);
     setTableContent(user, patients);
-    addPatientForm.reset()
-    
+    addPatientForm.reset();
   }
 }
 
@@ -521,22 +528,21 @@ async function deletePatientFromDb(patientId) {
   console.log("delete patient");
 
   let { billsData, billsError } = await database
-    .from('bills')
+    .from("bills")
     .delete()
-    .match({ patient_id: patientId })
+    .match({ patient_id: patientId });
 
   let { patientData, patientError } = await database
-    .from('patients')
+    .from("patients")
     .delete()
-    .match({ id: patientId })
-
+    .match({ id: patientId });
 
   if (patientError) {
     errorManage(patientError);
   } else if (billsError) {
     errorManage(billsError);
   } else {
-    let user = database.auth.user()
+    let user = database.auth.user();
     let patients = await getPatientsData();
     setLoginContent(user, patients);
     setTableContent(user, patients);
