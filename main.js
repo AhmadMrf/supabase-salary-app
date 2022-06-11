@@ -49,11 +49,14 @@ async function signInAccount() {
     email,
     password,
   });
-  // console.log(typeof error);
+  
   if (error) {
     errorManage(error);
+    return null
+  }else{
+    signinForm.reset()
+    return user;
   }
-  return user;
 }
 
 //if signup return user info
@@ -83,8 +86,11 @@ async function signUpAccount() {
   );
   if (error) {
     errorManage(error);
+    return null
+  }else{
+    signupForm.reset()
+    return user;
   }
-  return user;
 }
 
 // sign out user and return null
@@ -344,7 +350,7 @@ async function openPatientBill(e, patients, patientBillData) {
     closeDialogBillBtn.removeEventListener('click', closeDialogBill)
   }
 
-  function addNewBill() {
+  async function addNewBill() {
     let newBillData = {
       created_at: addBillForm.elements.date.value,
       patient_id: selectedPatient.id,
@@ -354,7 +360,9 @@ async function openPatientBill(e, patients, patientBillData) {
       desc: addBillForm.elements.desc.value,
       equipment: addBillForm.elements.equipment.value,
     };
-    addBillToDb(newBillData);
+    
+    await addBillToDb(newBillData);
+    addBillForm.reset()
 
   }
 
@@ -436,6 +444,7 @@ async function addBillToDb(billData) {
     errorManage(error);
   } else {
     let newBills = await getPatientBillData(patientid);
+    
     renderpatientBill(patientid, newBills);
   }
 }
@@ -499,8 +508,11 @@ async function addPatientToDb() {
   } else {
     let user = database.auth.user()
     let patients = user ? await getPatientsData() : [];
+    
     setLoginContent(user, patients);
     setTableContent(user, patients);
+    addPatientForm.reset()
+    
   }
 }
 
