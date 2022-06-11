@@ -5,6 +5,7 @@ const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2Y2VzdGR2Y2RxbWtseHdpcm1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NTMzMDk2ODUsImV4cCI6MTk2ODg4NTY4NX0.TsUgJIRuIavxbvz0Ez-sdJ9uuaQHcIGuWrD5lUjHnrw";
 const database = createClient(supabaseUrl, supabaseKey);
 
+const formContent = document.querySelector(".form-content");
 const loginLabel = document.querySelector("#login-label");
 const loginContent = document.querySelector("#login-content");
 const addPatientSection = document.querySelector("#add-patient-form");
@@ -127,38 +128,47 @@ async function getPatientsData() {
 
 //get a 'string' as argument
 // change between signin , signup and signout and call setupApp again or call errorManage func
-async function changeSignState(stat) {
+async function changeSignState(state, clickedBtn) {
   console.log("click btn");
 
   let userData;
 
-  switch (stat) {
+  switch (state) {
     case "signin":
       // sign in btn active
+      clickedBtn.classList.add("preloader-btn");
       userData = await signInAccount();
       if (userData) {
-        setupApp(userData);
+        await setupApp(userData);
+        // clickedBtn.classList.remove("preloader-btn");
       } else {
+        clickedBtn.classList.remove("preloader-btn");
         console.log(userData, " خطا");
       }
       break;
     case "signup":
       // sign up btn active
+      clickedBtn.classList.add("preloader-btn");
       userData = await signUpAccount();
       if (userData) {
-        setupApp(userData);
+        await setupApp(userData);
+        // clickedBtn.classList.remove("preloader-btn");
       } else {
+        clickedBtn.classList.remove("preloader-btn");
         console.log(userData, " خطا");
       }
       break;
     default:
       // sign out btn active
+      clickedBtn.classList.add("preloader-btn");
       let { error } = await signOutAccount();
       if (error) {
+        clickedBtn.classList.remove("preloader-btn");
         console.log("has error", error);
       } else {
         console.log("no error", error);
         setupApp(null);
+        // clickedBtn.classList.remove("preloader-btn");
       }
   }
 }
@@ -190,7 +200,10 @@ function setLoginContent(loginState, patients) {
     signinForm = null;
     signupForm = null;
 
-    signoutBtn.addEventListener("click", () => changeSignState("signout"));
+    signoutBtn.addEventListener("click", (e) => {
+      // signoutBtn.classList.add("preloader-btn");
+      changeSignState("signout", e.currentTarget);
+    });
 
     // return {signinForm,signupForm,signoutBtn}
   } else {
@@ -217,12 +230,14 @@ function setLoginContent(loginState, patients) {
     signinForm = loginContent.querySelectorAll("form")[0];
     signupForm = loginContent.querySelectorAll("form")[1];
 
-    signinForm.elements.signinBtn.addEventListener("click", () =>
-      changeSignState("signin")
-    );
-    signupForm.elements.signupBtn.addEventListener("click", () =>
-      changeSignState("signup")
-    );
+    signinForm.elements.signinBtn.addEventListener("click", (e) => {
+      // e.currentTarget.classList.add("preloader-btn");
+      changeSignState("signin", e.currentTarget);
+    });
+    signupForm.elements.signupBtn.addEventListener("click", (e) => {
+      // e.currentTarget.classList.add("preloader-btn");
+      changeSignState("signup", e.currentTarget);
+    });
 
     signoutBtn = null;
 
@@ -235,6 +250,10 @@ function setLoginContent(loginState, patients) {
 async function setTableContent(loginState, patients) {
   if (loginState) {
     if (patients) {
+      tbody.innerHTML = patients
+        .map((trs) => '<tr class="preloader-box"></tr>')
+        .join("");
+
       let bills = await getPatientBillData();
 
       function totalCost(id) {
@@ -286,7 +305,10 @@ async function setTableContent(loginState, patients) {
       deletePatients.forEach((deletePatient) => {
         deletePatient.addEventListener(
           "click",
-          (e) => deletePatientFromDb(e.target.dataset.patientid)
+          (e) => {
+            e.currentTarget.classList.add("preloader-btn");
+            deletePatientFromDb(e.target.dataset.patientid);
+          }
           // console.log(e.target.dataset.patientid)
         );
       });
@@ -357,6 +379,7 @@ async function openPatientBill(e, patients, patientBillData) {
   }
 
   async function addNewBill() {
+    addNewBillBtn.classList.add("preloader-btn");
     let newBillData = {
       created_at: addBillForm.elements.date.value,
       patient_id: selectedPatient.id,
@@ -369,6 +392,7 @@ async function openPatientBill(e, patients, patientBillData) {
 
     await addBillToDb(newBillData);
     addBillForm.reset();
+    addNewBillBtn.classList.remove("preloader-btn");
   }
 
   closeDialogBillBtn.addEventListener("click", closeDialogBill);
@@ -412,13 +436,14 @@ function renderpatientBill(patientid, bills) {
     });
     let removeBills = dialogBillTbody.querySelectorAll(".delete-bill");
     removeBills.forEach((removeBill) => {
-      removeBill.addEventListener("click", (e) =>
-        removeBillFromDb(e.target.dataset.bill, patientid)
-      );
+      removeBill.addEventListener("click", (e) => {
+        e.currentTarget.classList.add("preloader-btn");
+        removeBillFromDb(e.target.dataset.bill, patientid);
+      });
     });
   } else {
     dialogBillTbody.innerHTML = `<tr>
-       <td colspan="6" class="">هنوز صورت حسابی ثبت نشده .</td>
+       <td colspan="6" class="fake-td">هنوز صورت حسابی ثبت نشده .</td>
     </tr>`;
   }
 }
@@ -488,7 +513,11 @@ function setAddPatientTab(loginState) {
   `;
     addPatientForm = addPatientSection.querySelector("form");
     let addPatientBtn = addPatientSection.querySelector("button");
-    addPatientBtn.addEventListener("click", addPatientToDb);
+    addPatientBtn.addEventListener("click", async (e) => {
+      addPatientBtn.classList.add("preloader-btn");
+      await addPatientToDb();
+      addPatientBtn.classList.remove("preloader-btn");
+    });
   } else {
     addPatientSection.innerHTML =
       "<span>ابتدا وارد حساب کاربری خود شوید</span>";
@@ -551,7 +580,9 @@ async function deletePatientFromDb(patientId) {
 
 async function setupApp(loginState) {
   console.log("setup");
+  formContent.classList.add("preloader-box");
   let patients = loginState ? await getPatientsData() : [];
+  formContent.classList.remove("preloader-box");
 
   console.log("patients", patients);
 

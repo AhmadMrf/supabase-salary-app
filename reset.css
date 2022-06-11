@@ -1,5 +1,6 @@
-
-* {
+*,
+*::after,
+*::before {
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
@@ -53,7 +54,7 @@ li {
 input {
   display: block;
   outline: none;
-  border: none ;
+  border: none;
 }
 
 textarea {
@@ -63,12 +64,12 @@ textarea {
 
 textarea:focus,
 input:focus {
-  border-color: #222 ;
+  border-color: #222;
 }
 
 /* ------------------------------------ */
 button {
-  outline: none ;
+  outline: none;
   border: none;
   background: transparent;
 }
