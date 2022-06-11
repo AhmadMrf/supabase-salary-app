@@ -78,34 +78,34 @@
   display: none;
 }
 
-#nurse:checked~.form-content div[data-form="nurse"] {
+#nurse:checked ~ .form-content div[data-form="nurse"] {
   display: flex;
 }
 
-#nurse:checked~.form-titles label[for="nurse"] {
+#nurse:checked ~ .form-titles label[for="nurse"] {
   background-color: #fff;
   color: #222;
 }
 
-#add-patient:checked~.form-content div[data-form="add-patient"] {
+#add-patient:checked ~ .form-content div[data-form="add-patient"] {
   display: block;
 }
 
-#add-patient:checked~.form-titles label[for="add-patient"] {
+#add-patient:checked ~ .form-titles label[for="add-patient"] {
   background-color: #fff;
   color: #222;
 }
 
-#more:checked~.form-content div[data-form="more"] {
+#more:checked ~ .form-content div[data-form="more"] {
   display: block;
 }
 
-#more:checked~.form-titles label[for="more"] {
+#more:checked ~ .form-titles label[for="more"] {
   background-color: #fff;
   color: #222;
 }
 
-#hidden:checked~.form-titles label {
+#hidden:checked ~ .form-titles label {
   border-radius: 10px;
 }
 
@@ -131,7 +131,6 @@ table {
 table * {
   position: relative;
 }
-
 
 table thead tr {
   height: 60px;
@@ -303,7 +302,7 @@ button:hover {
   flex: 1;
 }
 
-.panel-info>span {
+.panel-info > span {
   border-right: 5px solid rgba(54, 48, 74, 0.5);
   padding-right: 10px;
 }
@@ -470,7 +469,7 @@ a {
   padding: 1rem 0;
 }
 
-.patient-account-info>span {
+.patient-account-info > span {
   padding: 10px 5px;
   color: #555555;
 }
@@ -495,7 +494,7 @@ tbody .edit-patient {
 .patient-account-bill .delete-bill {
   visibility: hidden;
   opacity: 0;
-  transition: opacity .3s ease;
+  transition: opacity 0.3s ease;
 }
 
 .patient-account-bill tbody tr:hover .delete-bill {
@@ -521,7 +520,7 @@ tbody .edit-patient {
   background-color: rgb(140, 173, 197);
 } */
 
-.patient-account>button {
+.patient-account > button {
   width: 100px;
   display: block;
   margin: 10px auto;
@@ -532,7 +531,7 @@ tbody .edit-patient {
     display: block;
   } */
 
-  table>*,
+  table > *,
   table tr,
   table td,
   table th {
@@ -719,5 +718,45 @@ tbody .edit-patient {
 
   .form-details {
     flex-direction: column;
+  }
+}
+
+.preloader {
+  position: relative;
+  overflow: hidden;
+}
+
+.preloader:after {
+  content: "منتظر بمانید ...";
+  display: flex;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+  color: #1e1e1e;
+  font-size: 0.7rem;
+  background-color: rgb(179, 179, 179);
+  background: linear-gradient(
+    104deg,
+    rgba(179, 179, 179, 1) 31%,
+    rgba(234, 234, 234, 1) 35%,
+    rgba(234, 234, 234, 1) 38%,
+    rgba(179, 179, 179, 1) 41%
+  );
+  background-size: 300%;
+  animation: preloader 1.5s infinite;
+}
+@keyframes preloader {
+  0% {
+    background-position-x: 0%;
+  }
+  50% {
+    background-position-x: 100%;
+  }
+  100% {
+    background-position-x: 100%;
   }
 }
