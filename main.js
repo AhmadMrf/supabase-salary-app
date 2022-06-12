@@ -189,9 +189,8 @@ function setLoginContent(loginState, patients) {
         <div class="panel-info">
           <span>${loginState.user_metadata.fullName}</span>
           <span>${loginState.user_metadata.job}</span>
-          <span>تعداد بیماران : <span id="patient-number" >${
-            patients ? patients.length : "-"
-          }</span></span>
+          <span>تعداد بیماران : <span id="patient-number" >${patients ? patients.length : "-"
+      }</span></span>
         </div>
         <button name="signoutBtn" type="button" href="#">خروج</button>
       </div>
@@ -232,7 +231,6 @@ function setLoginContent(loginState, patients) {
     signupForm = loginContent.querySelectorAll("form")[1];
 
     signinForm.elements.signinBtn.addEventListener("click", (e) => {
-      // e.currentTarget.classList.add("preloader-btn");
       e.preventDefault();
       if (!isFormValid(signinForm)) {
         errorManage({ message: "فرم به درستی تکمیل نشده ." });
@@ -241,7 +239,6 @@ function setLoginContent(loginState, patients) {
       changeSignState("signin", e.currentTarget);
     });
     signupForm.elements.signupBtn.addEventListener("click", (e) => {
-      // e.currentTarget.classList.add("preloader-btn");
       e.preventDefault();
       if (!isFormValid(signupForm)) {
         errorManage({ message: "فرم به درستی تکمیل نشده ." });
@@ -252,7 +249,6 @@ function setLoginContent(loginState, patients) {
 
     signoutBtn = null;
 
-    //  return {signinForm,signupForm,signoutBtn}
   }
 }
 
@@ -290,20 +286,16 @@ async function setTableContent(loginState, patients) {
           <td class="column4">${cost ?? 0}</td>
           <td class="column5">${incomes ?? 0}</td>
           <td class="column6">
-            <button class="delete-patient" data-patientid="${
-              patient.id
+            <button class="delete-patient" data-patientid="${patient.id
             }" >حذف</button>
-            <button class="edit-patient" data-patientid="${
-              patient.id
+            <button class="edit-patient" data-patientid="${patient.id
             }" >اصلاح</button>
-            <button class="edit-bills" data-patientid="${
-              patient.id
+            <button class="edit-bills" data-patientid="${patient.id
             }" > صورت حساب <span>(${billsLength})<span> </button></td>
           </tr>`);
         })
         .join("");
 
-      // let addCost = document.querySelector("#add-cost");
 
       let editPatients = tbody.querySelectorAll(".edit-patient");
       editPatients.forEach((editPatient) => {
@@ -320,7 +312,6 @@ async function setTableContent(loginState, patients) {
             e.currentTarget.classList.add("preloader-btn");
             deletePatientFromDb(e.target.dataset.patientid);
           }
-          // console.log(e.target.dataset.patientid)
         );
       });
       let editBtns = tbody.querySelectorAll(".edit-bills");
@@ -329,9 +320,7 @@ async function setTableContent(loginState, patients) {
           openPatientBill(e, patients, bills)
         );
       });
-      // addCost.addEventListener("click", () => {
-      //   addBill();
-      // });
+
 
       if (!patients.length) {
         tbody.innerHTML = `<tr>
@@ -371,7 +360,6 @@ async function openPatientBill(e, patients, patientBillData) {
   const addBillForm = patientBill.querySelector("form"); //TODO form add bill
   const closeDialogBillBtn = patientBill.querySelector("#close-bill-btn");
   const addNewBillBtn = patientBill.querySelector("#add-bill");
-  // const addBillFormBtn = addBillForm.querySelector("button");
 
   patientFullname.innerHTML = selectedPatient.fullName;
   patientCodenum.innerHTML = selectedPatient.codeNum;
@@ -426,8 +414,8 @@ function renderpatientBill(patientid, bills) {
     <tr>
         <td class="column1">${+i + 1}</td>
         <td class="column2">${new Date(bill.created_at).toLocaleString(
-          "fa"
-        )}</td>
+        "fa"
+      )}</td>
         <td class="column3">${bill.visit}</td>
         <td class="column4">${bill.equipment}</td>
         <td class="column5">${bill.income}</td>
@@ -501,8 +489,6 @@ async function addBillToDb(billData) {
 async function getPatientBillData(patientId) {
   console.log("get bill");
   let { data, error } = await database.from("bills");
-  // .select('*')
-  // .eq('patient_id',patientId);
 
   if (error) {
     errorManage(error);
@@ -521,7 +507,7 @@ function setAddPatientTab(loginState) {
         <div class="info">
           <input class="fname" type="text" name="fullName" placeholder="نام بیمار"/>
           <input type="text" name="codeNum" placeholder="کد ملی" />
-          <input type="text" name="telNum" placeholder="شماره تماس" />
+          <input type="tel" name="telNum" placeholder="شماره تماس" />
           <input type="text" name="adderes" placeholder="آدرس" />
         </div>
         <button type="submit" href="#">افزودن بیمار جدید</button>
@@ -553,7 +539,6 @@ async function addPatientToDb() {
   let telNum = addPatientForm.elements.telNum.value;
   let adderes = addPatientForm.elements.adderes.value;
   let nurse_id = database.auth.user().id;
-  // console.log(fullName,codeNum,telNum,adderes);
 
   let { error } = await database
     .from("patients")
@@ -599,8 +584,62 @@ async function deletePatientFromDb(patientId) {
   }
 }
 
-function isFormValid() {
-  return false;
+function isFormValid(form) {
+  let typeAttribute;
+  let inputValue;
+  let isValid = true;
+  [...form.elements].some((item) => {
+    typeAttribute = item.getAttribute('type')
+    inputValue = item.value
+    // console.log(item.getAttribute());
+    switch (typeAttribute) {
+      case 'email':
+        console.log('email');
+        if (!inputValue
+          .toLowerCase()
+          .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          )) {
+          isValid = false;
+          return true
+        }
+        break;
+
+      case 'password':
+        console.log('password');
+        if (inputValue.length <= 5) {
+          isValid = false;
+          return true
+        }
+        break;
+
+      case 'number':
+        console.log('number');
+        if (inputValue.length > 12 || inputValue < 0) {
+          isValid = false;
+          return true
+        }
+        break;
+
+      case 'tel':
+        console.log('tel');
+        if (inputValue.length < 10 || inputValue.length > 11 || isNaN(inputValue)) {
+          isValid = false;
+          return true
+        }
+        break;
+
+      case 'text':
+        console.log('text');
+        if (inputValue.length <= 2) {
+          isValid = false;
+          return true
+        }
+        break;
+    }
+  })
+  console.log('validation');
+  return isValid;
 }
 
 async function setupApp(loginState) {
