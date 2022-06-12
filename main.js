@@ -207,13 +207,14 @@ function setLoginContent(loginState, patients) {
 
     // return {signinForm,signupForm,signoutBtn}
   } else {
+    //TODO form signin-up
     loginContent.innerHTML = `
     <form data-type="ورود" action="#">
       <div class="info">
         <input  required type="email" name="email" placeholder="ایمیل" />
         <input  required type="password" name="password" placeholder="رمز ورود" />
       </div>
-      <button name="signinBtn" type="button" href="#">ورود</button>
+      <button name="signinBtn" type="submit" href="#">ورود</button>
       <a href="#">فراموشی رمز عبور </a>
     </form>
 
@@ -224,7 +225,7 @@ function setLoginContent(loginState, patients) {
         <input  required type="text" name="fullName" placeholder="نام و نام خانوادگی" />
         <input  required type="text" name="job" placeholder="سمت و شغل" />
       </div>
-      <button name="signupBtn" type="button" href="#"> ثبت نام</button>
+      <button name="signupBtn" type="submit" href="#"> ثبت نام</button>
     </form>
 `;
     signinForm = loginContent.querySelectorAll("form")[0];
@@ -232,10 +233,20 @@ function setLoginContent(loginState, patients) {
 
     signinForm.elements.signinBtn.addEventListener("click", (e) => {
       // e.currentTarget.classList.add("preloader-btn");
+      e.preventDefault();
+      if (!isFormValid(signinForm)) {
+        errorManage({ message: "فرم به درستی تکمیل نشده ." });
+        return;
+      }
       changeSignState("signin", e.currentTarget);
     });
     signupForm.elements.signupBtn.addEventListener("click", (e) => {
       // e.currentTarget.classList.add("preloader-btn");
+      e.preventDefault();
+      if (!isFormValid(signupForm)) {
+        errorManage({ message: "فرم به درستی تکمیل نشده ." });
+        return;
+      }
       changeSignState("signup", e.currentTarget);
     });
 
@@ -285,7 +296,7 @@ async function setTableContent(loginState, patients) {
             <button class="edit-patient" data-patientid="${
               patient.id
             }" >اصلاح</button>
-            <button class="edit-bill" data-patientid="${
+            <button class="edit-bills" data-patientid="${
               patient.id
             }" > صورت حساب <span>(${billsLength})<span> </button></td>
           </tr>`);
@@ -312,7 +323,7 @@ async function setTableContent(loginState, patients) {
           // console.log(e.target.dataset.patientid)
         );
       });
-      let editBtns = tbody.querySelectorAll(".edit-bill");
+      let editBtns = tbody.querySelectorAll(".edit-bills");
       editBtns.forEach((editBtn) => {
         editBtn.addEventListener("click", (e) =>
           openPatientBill(e, patients, bills)
@@ -357,7 +368,7 @@ async function openPatientBill(e, patients, patientBillData) {
   const patientCodenum = patientBill.querySelector("#patient-codenum");
   const patientTelnum = patientBill.querySelector("#patient-telnum");
   const patientAdderes = patientBill.querySelector("#patient-adderes");
-  const addBillForm = patientBill.querySelector("form");
+  const addBillForm = patientBill.querySelector("form"); //TODO form add bill
   const closeDialogBillBtn = patientBill.querySelector("#close-bill-btn");
   const addNewBillBtn = patientBill.querySelector("#add-bill");
   // const addBillFormBtn = addBillForm.querySelector("button");
@@ -379,6 +390,10 @@ async function openPatientBill(e, patients, patientBillData) {
   }
 
   async function addNewBill() {
+    if (!isFormValid(addBillForm)) {
+      errorManage({ message: "فرم به درستی تکمیل نشده ." });
+      return;
+    }
     addNewBillBtn.classList.add("preloader-btn");
     let newBillData = {
       created_at: addBillForm.elements.date.value,
@@ -500,20 +515,26 @@ async function getPatientBillData(patientId) {
 //get user data (loginState) or null as argument
 function setAddPatientTab(loginState) {
   if (loginState) {
+    //TODO form add patient
     addPatientSection.innerHTML = `
-      <form action="#">
+      <form action="#"> 
         <div class="info">
           <input class="fname" type="text" name="fullName" placeholder="نام بیمار"/>
           <input type="text" name="codeNum" placeholder="کد ملی" />
           <input type="text" name="telNum" placeholder="شماره تماس" />
           <input type="text" name="adderes" placeholder="آدرس" />
         </div>
-        <button type="button" href="#">افزودن بیمار جدید</button>
+        <button type="submit" href="#">افزودن بیمار جدید</button>
       </form>
   `;
     addPatientForm = addPatientSection.querySelector("form");
     let addPatientBtn = addPatientSection.querySelector("button");
     addPatientBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!isFormValid(addPatientForm)) {
+        errorManage({ message: "فرم به درستی تکمیل نشده ." });
+        return;
+      }
       addPatientBtn.classList.add("preloader-btn");
       await addPatientToDb();
       addPatientBtn.classList.remove("preloader-btn");
@@ -576,6 +597,10 @@ async function deletePatientFromDb(patientId) {
     setLoginContent(user, patients);
     setTableContent(user, patients);
   }
+}
+
+function isFormValid() {
+  return false;
 }
 
 async function setupApp(loginState) {
