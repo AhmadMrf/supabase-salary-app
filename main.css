@@ -487,8 +487,11 @@ tbody .edit-patient {
   width: calc(5rem + 2vw);
   flex: 1 0 max-content;
 }
-
-tbody .edit-patient {
+tbody .edit-bills {
+  flex: 1 0 max-content;
+}
+tbody .edit-patient,
+tbody .edit-bill {
   background-color: #5f7aff;
 }
 
@@ -508,18 +511,6 @@ tbody .edit-patient {
   top: 0;
   z-index: 1;
 }
-
-/* 
-.patient-account-bill table thead tr:last-child {
-  background-color: #fff;
-  border-bottom: 2px solid #36304a;
-}
-.patient-account-bill table thead tr:last-child button {
-  background-color: rgb(140, 173, 187);
-}
-.patient-account-bill table thead tr:last-child button:hover {
-  background-color: rgb(140, 173, 197);
-} */
 
 .patient-account > button {
   width: 100px;
@@ -552,10 +543,11 @@ tbody .edit-patient {
 .preloader-box {
   position: relative;
   overflow: hidden;
+  height: 50px;
 }
 
 .preloader-box:after {
-  content: "منتظر بمانید ...";
+  content: " در حال دریافت اطلاعات ...";
   display: flex;
   position: absolute;
   width: 100%;
@@ -775,7 +767,7 @@ tbody .edit-patient {
   }
 }
 
-@media (max-width: 450px) {
+@media (max-width: 400px) {
   .container-table100 {
     padding-left: 15px;
     padding-right: 15px;
