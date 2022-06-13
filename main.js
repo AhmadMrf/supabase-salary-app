@@ -189,8 +189,9 @@ function setLoginContent(loginState, patients) {
         <div class="panel-info">
           <span>${loginState.user_metadata.fullName}</span>
           <span>${loginState.user_metadata.job}</span>
-          <span>تعداد بیماران : <span id="patient-number" >${patients ? patients.length : "-"
-      }</span></span>
+          <span>تعداد بیماران : <span id="patient-number" >${
+            patients ? patients.length : "-"
+          }</span></span>
         </div>
         <button name="signoutBtn" type="button" href="#">خروج</button>
       </div>
@@ -233,7 +234,6 @@ function setLoginContent(loginState, patients) {
     signinForm.elements.signinBtn.addEventListener("click", (e) => {
       e.preventDefault();
       if (!isFormValid(signinForm)) {
-        errorManage({ message: "فرم به درستی تکمیل نشده ." });
         return;
       }
       changeSignState("signin", e.currentTarget);
@@ -241,14 +241,13 @@ function setLoginContent(loginState, patients) {
     signupForm.elements.signupBtn.addEventListener("click", (e) => {
       e.preventDefault();
       if (!isFormValid(signupForm)) {
-        errorManage({ message: "فرم به درستی تکمیل نشده ." });
+        // errorManage({ message: "فرم به درستی تکمیل نشده ." });
         return;
       }
       changeSignState("signup", e.currentTarget);
     });
 
     signoutBtn = null;
-
   }
 }
 
@@ -286,16 +285,18 @@ async function setTableContent(loginState, patients) {
           <td class="column4">${cost ?? 0}</td>
           <td class="column5">${incomes ?? 0}</td>
           <td class="column6">
-            <button class="delete-patient" data-patientid="${patient.id
+            <button class="delete-patient" data-patientid="${
+              patient.id
             }" >حذف</button>
-            <button class="edit-patient" data-patientid="${patient.id
+            <button class="edit-patient" data-patientid="${
+              patient.id
             }" >اصلاح</button>
-            <button class="edit-bills" data-patientid="${patient.id
+            <button class="edit-bills" data-patientid="${
+              patient.id
             }" > صورت حساب <span>(${billsLength})<span> </button></td>
           </tr>`);
         })
         .join("");
-
 
       let editPatients = tbody.querySelectorAll(".edit-patient");
       editPatients.forEach((editPatient) => {
@@ -306,13 +307,10 @@ async function setTableContent(loginState, patients) {
 
       let deletePatients = tbody.querySelectorAll(".delete-patient");
       deletePatients.forEach((deletePatient) => {
-        deletePatient.addEventListener(
-          "click",
-          (e) => {
-            e.currentTarget.classList.add("preloader-btn");
-            deletePatientFromDb(e.target.dataset.patientid);
-          }
-        );
+        deletePatient.addEventListener("click", (e) => {
+          e.currentTarget.classList.add("preloader-btn");
+          deletePatientFromDb(e.target.dataset.patientid);
+        });
       });
       let editBtns = tbody.querySelectorAll(".edit-bills");
       editBtns.forEach((editBtn) => {
@@ -320,7 +318,6 @@ async function setTableContent(loginState, patients) {
           openPatientBill(e, patients, bills)
         );
       });
-
 
       if (!patients.length) {
         tbody.innerHTML = `<tr>
@@ -365,6 +362,7 @@ async function openPatientBill(e, patients, patientBillData) {
   patientCodenum.innerHTML = selectedPatient.codeNum;
   patientTelnum.innerHTML = selectedPatient.telNum;
   patientAdderes.innerHTML = selectedPatient.adderes;
+  addBillForm.elements.date.valueAsDate = new Date();
 
   renderpatientBill(selectedPatient.id, patientBillData);
 
@@ -379,20 +377,27 @@ async function openPatientBill(e, patients, patientBillData) {
 
   async function addNewBill() {
     if (!isFormValid(addBillForm)) {
-      errorManage({ message: "فرم به درستی تکمیل نشده ." });
       return;
     }
     addNewBillBtn.classList.add("preloader-btn");
     let newBillData = {
-      created_at: addBillForm.elements.date.value,
+      created_at: addBillForm.elements.date.valueAsDate || new Date(),
       patient_id: selectedPatient.id,
       nurse_id: database.auth.user().id,
-      visit: addBillForm.elements.visit.value,
-      income: addBillForm.elements.income.value,
+      visit:
+        addBillForm.elements.visit.value == ""
+          ? 0
+          : addBillForm.elements.visit.value,
+      income:
+        addBillForm.elements.income.value == ""
+          ? 0
+          : addBillForm.elements.income.value,
+      equipment:
+        addBillForm.elements.equipment.value == ""
+          ? 0
+          : addBillForm.elements.equipment.value,
       desc: addBillForm.elements.desc.value,
-      equipment: addBillForm.elements.equipment.value,
     };
-
     await addBillToDb(newBillData);
     addBillForm.reset();
     addNewBillBtn.classList.remove("preloader-btn");
@@ -413,9 +418,9 @@ function renderpatientBill(patientid, bills) {
       return `
     <tr>
         <td class="column1">${+i + 1}</td>
-        <td class="column2">${new Date(bill.created_at).toLocaleString(
-        "fa"
-      )}</td>
+        <td class="column2">${new Date(bill.created_at).toLocaleString("fa", {
+          dateStyle: "short",
+        })}</td>
         <td class="column3">${bill.visit}</td>
         <td class="column4">${bill.equipment}</td>
         <td class="column5">${bill.income}</td>
@@ -518,7 +523,6 @@ function setAddPatientTab(loginState) {
     addPatientBtn.addEventListener("click", async (e) => {
       e.preventDefault();
       if (!isFormValid(addPatientForm)) {
-        errorManage({ message: "فرم به درستی تکمیل نشده ." });
         return;
       }
       addPatientBtn.classList.add("preloader-btn");
@@ -588,57 +592,73 @@ function isFormValid(form) {
   let typeAttribute;
   let inputValue;
   let isValid = true;
-  [...form.elements].some((item) => {
-    typeAttribute = item.getAttribute('type')
-    inputValue = item.value
+  function invalidAlert(input, alert) {
+    isValid = false;
+    let errorAlert = `<span class='invalid-alert-msg'>${alert}</spsn>`;
+    input.classList.add("invalid-alert");
+    input.insertAdjacentHTML("beforebegin", errorAlert);
+    setTimeout(() => {
+      input.classList.remove("invalid-alert");
+      input.previousElementSibling.remove();
+    }, 3000);
+  }
+  [...form.elements].forEach((item) => {
+    typeAttribute = item.getAttribute("type");
+    inputValue = item.value;
     // console.log(item.getAttribute());
     switch (typeAttribute) {
-      case 'email':
-        console.log('email');
-        if (!inputValue
-          .toLowerCase()
-          .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-          )) {
-          isValid = false;
-          return true
+      case "email":
+        // console.log("email");
+        if (
+          !inputValue
+            .toLowerCase()
+            .match(
+              /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            )
+        ) {
+          invalidAlert(item, "ایمیل به درستی وارد نشده");
+          // return true;
         }
         break;
 
-      case 'password':
-        console.log('password');
+      case "password":
+        // console.log("password");
         if (inputValue.length <= 5) {
-          isValid = false;
-          return true
+          invalidAlert(item, "حداقل 6 کارکتر وارد کنید");
+          // return true;
         }
         break;
 
-      case 'number':
-        console.log('number');
+      case "number":
+        // console.log("number");
         if (inputValue.length > 12 || inputValue < 0) {
-          isValid = false;
-          return true
+          invalidAlert(item, "اعداد منفی و بیشتر از 12 عدد مجاز نیست");
+          // return true;
         }
         break;
 
-      case 'tel':
-        console.log('tel');
-        if (inputValue.length < 10 || inputValue.length > 11 || isNaN(inputValue)) {
-          isValid = false;
-          return true
+      case "tel":
+        // console.log("tel");
+        if (
+          inputValue.length < 10 ||
+          inputValue.length > 11 ||
+          isNaN(inputValue)
+        ) {
+          invalidAlert(item, "شماره صحیح وارد کنید (با کد شهر)");
+          // return true;
         }
         break;
 
-      case 'text':
-        console.log('text');
+      case "text":
+        // console.log("text");
         if (inputValue.length <= 2) {
-          isValid = false;
-          return true
+          invalidAlert(item, "حداقل 3 کارکتر وارد کنید");
+          // return true;
         }
         break;
     }
-  })
-  console.log('validation');
+  });
+  // console.log("validation");
   return isValid;
 }
 

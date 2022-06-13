@@ -455,6 +455,15 @@ a {
 .add-bill-inputs {
   display: flex;
   flex: 2 1 50%;
+  gap: 0.6rem;
+}
+.add-bill-inputs label {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.add-bill-inputs label input {
+  flex: 0 0 45px;
 }
 
 .patient-account.hidden {
@@ -518,6 +527,24 @@ tbody .edit-bill {
   margin: 10px auto;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.invalid-alert {
+  border: 1px solid rgb(255, 98, 98) !important;
+  margin-bottom: 1rem;
+}
+.invalid-alert-msg {
+  color: rgb(255, 98, 98);
+  font-size: 0.6rem;
+  padding-bottom: 0.5rem;
+}
 .preloader-btn {
   position: relative;
 }
@@ -767,7 +794,7 @@ tbody .edit-bill {
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 500px) {
   .container-table100 {
     padding-left: 15px;
     padding-right: 15px;
