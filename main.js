@@ -5,15 +5,15 @@ const supabaseKey =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV2Y2VzdGR2Y2RxbWtseHdpcm1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NTMzMDk2ODUsImV4cCI6MTk2ODg4NTY4NX0.TsUgJIRuIavxbvz0Ez-sdJ9uuaQHcIGuWrD5lUjHnrw";
 const database = createClient(supabaseUrl, supabaseKey);
 
-const formContent = document.querySelector(".form-content");
+const wrapper = document.querySelector(".limiter");
+const topBarContent = document.querySelector(".form-content");
 const loginLabel = document.querySelector("#login-label");
 const loginContent = document.querySelector("#login-content");
+const patientTbody = document.querySelector("table > tbody");
 const addPatientSection = document.querySelector("#add-patient-form");
-const tbody = document.querySelector("table > tbody");
-let errorBox = document.querySelector("#error-box");
 const patientBill = document.querySelector(".patient-account");
-const wrapper = document.querySelector(".limiter");
 const dialogBillTbody = patientBill.querySelector("tbody");
+let errorBox = document.querySelector("#error-box");
 
 let signinForm; //declare in setLoginContent func
 let signupForm; //declare in setLoginContent func
@@ -256,7 +256,7 @@ function setLoginContent(loginState, patients) {
 async function setTableContent(loginState, patients) {
   if (loginState) {
     if (patients) {
-      tbody.innerHTML = patients
+      patientTbody.innerHTML = patients
         .map((trs) => '<tr class="preloader-box"></tr>')
         .join("");
 
@@ -275,7 +275,7 @@ async function setTableContent(loginState, patients) {
 
       let cost, incomes, billsLength;
 
-      tbody.innerHTML = patients
+      patientTbody.innerHTML = patients
         .map((patient, i) => {
           ({ cost, incomes, billsLength } = totalCost(patient.id));
           return (patient = `<tr>
@@ -298,21 +298,21 @@ async function setTableContent(loginState, patients) {
         })
         .join("");
 
-      let editPatients = tbody.querySelectorAll(".edit-patient");
+      let editPatients = patientTbody.querySelectorAll(".edit-patient");
       editPatients.forEach((editPatient) => {
         editPatient.addEventListener("click", (e) =>
           openPatientBill(e, patients, bills)
         );
       });
 
-      let deletePatients = tbody.querySelectorAll(".delete-patient");
+      let deletePatients = patientTbody.querySelectorAll(".delete-patient");
       deletePatients.forEach((deletePatient) => {
         deletePatient.addEventListener("click", (e) => {
           e.currentTarget.classList.add("preloader-btn");
           deletePatientFromDb(e.target.dataset.patientid);
         });
       });
-      let editBtns = tbody.querySelectorAll(".edit-bills");
+      let editBtns = patientTbody.querySelectorAll(".edit-bills");
       editBtns.forEach((editBtn) => {
         editBtn.addEventListener("click", (e) =>
           openPatientBill(e, patients, bills)
@@ -320,13 +320,13 @@ async function setTableContent(loginState, patients) {
       });
 
       if (!patients.length) {
-        tbody.innerHTML = `<tr>
+        patientTbody.innerHTML = `<tr>
        <td class="fake-td" colspan="4">شما هنوز بیماری ثبت نکرده اید . </td>
        <td class="fake-td" colspan="2"><label for="add-patient">افزودن بیمار جدید </label></td>
        </tr>`;
       }
     } else {
-      tbody.innerHTML = `<tr>
+      patientTbody.innerHTML = `<tr>
       <td class="fake-td" colspan="4">اختلال در دریافت اطلاعات بیماران </td>
       <td class="fake-td" colspan="2"><button id="refreshBtn" >مجدد تلاش کنید</button></td>
       </tr>`;
@@ -335,7 +335,7 @@ async function setTableContent(loginState, patients) {
         .addEventListener("click", () => setupApp(database.auth.user()));
     }
   } else {
-    tbody.innerHTML =
+    patientTbody.innerHTML =
       '<tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr>';
   }
 }
@@ -664,9 +664,9 @@ function isFormValid(form) {
 
 async function setupApp(loginState) {
   console.log("setup");
-  formContent.classList.add("preloader-box");
+  topBarContent.classList.add("preloader-box");
   let patients = loginState ? await getPatientsData() : [];
-  formContent.classList.remove("preloader-box");
+  topBarContent.classList.remove("preloader-box");
 
   console.log("patients", patients);
 
