@@ -301,7 +301,7 @@ async function setTableContent(loginState, patients) {
       let editPatients = patientTbody.querySelectorAll(".edit-patient");
       editPatients.forEach((editPatient) => {
         editPatient.addEventListener("click", (e) =>
-          openPatientBill(e, patients, bills)
+          editPatientFromDb(e.target.dataset.patientid)
         );
       });
 
@@ -588,19 +588,41 @@ async function deletePatientFromDb(patientId) {
   }
 }
 
+//edit patients
+async function editPatientFromDb(patientId) {
+  console.log("edit patient");
+  const { error, data } = await database
+    .from("patients")
+    .update({ fullName: "edited full" })
+    .eq("id", patientId);
+
+  if (error) {
+    errorManage(error);
+  } else {
+    let user = database.auth.user();
+    let patients = user ? await getPatientsData() : [];
+
+    setLoginContent(user, patients);
+    setTableContent(user, patients);
+  }
+}
+//validation form
 function isFormValid(form) {
   let typeAttribute;
   let inputValue;
   let isValid = true;
   function invalidAlert(input, alert) {
+    let ShowAlert = !input.classList.contains("invalid-alert");
     isValid = false;
-    let errorAlert = `<span class='invalid-alert-msg'>${alert}</spsn>`;
-    input.classList.add("invalid-alert");
-    input.insertAdjacentHTML("beforebegin", errorAlert);
-    setTimeout(() => {
-      input.classList.remove("invalid-alert");
-      input.previousElementSibling.remove();
-    }, 3000);
+    if (ShowAlert) {
+      let errorAlert = `<span class='invalid-alert-msg'>${alert}</spsn>`;
+      input.classList.add("invalid-alert");
+      input.insertAdjacentHTML("beforebegin", errorAlert);
+      setTimeout(() => {
+        input.classList.remove("invalid-alert");
+        input.previousElementSibling.remove();
+      }, 3000);
+    }
   }
   [...form.elements].forEach((item) => {
     typeAttribute = item.getAttribute("type");
