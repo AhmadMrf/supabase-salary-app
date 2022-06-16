@@ -12,36 +12,20 @@
 
   <body>
     <div class="limiter">
-      <div class="container-table100">
-        <div class="form-wrap">
-          <input
-            class="hidden-input"
-            type="radio"
-            name="show-form"
-            id="nurse"
-            checked
-          />
-          <input
-            class="hidden-input"
-            type="radio"
-            name="show-form"
-            id="add-patient"
-          />
+      <div class="container">
+        <div class="top-bar">
+          <input class="hidden-input" type="radio" name="show-form" id="nurse" checked />
+          <input class="hidden-input" type="radio" name="show-form" id="add-patient" />
           <input class="hidden-input" type="radio" name="show-form" id="more" />
-          <input
-            class="hidden-input"
-            type="radio"
-            name="show-form"
-            id="hidden"
-          />
-          <div class="form-titles">
+          <input class="hidden-input" type="radio" name="show-form" id="hidden" />
+          <div class="top-bar-titles">
             <label id="login-label" for="nurse"> ورود - ثبت نام</label>
             <label for="add-patient">افزودن بیمار جدید </label>
             <label for="more">بیشتر </label>
             <label for="hidden">x</label>
           </div>
           <div id="error-box"></div>
-          <div class="form-content">
+          <div class="top-bar-content">
             <div id="login-content" data-form="nurse" class="form-details">
               <!-- 
               <form data-type="ورود" class=" hidden" action="#">
@@ -72,11 +56,7 @@
               </div>-->
             </div>
 
-            <div
-              id="add-patient-form"
-              data-form="add-patient"
-              class="form-details"
-            >
+            <div id="add-patient-form" data-form="add-patient" class="form-details">
               <!-- <form action="#">
                 <div class="info">
                   <input
@@ -113,11 +93,12 @@
             </div>
           </div>
         </div>
-        <div class="wrap-table100">
-          <div class="table100">
+
+        <div class="patients-table">
+          <div class="table">
             <table>
               <thead>
-                <tr class="table100-head">
+                <tr class="table-head">
                   <th class="column1">ردیف</th>
                   <th class="column2">نام بیمار</th>
                   <th class="column3">تلفن</th>
@@ -141,8 +122,9 @@
             </table>
           </div>
         </div>
-        <div class="patient-account hidden">
-          <div class="patient-account-info">
+
+        <div class="patient-bills hidden">
+          <div class="patient-bills-info">
             <span>نام بیمار : <span id="patient-fullname"></span></span>
             <span>کد ملی : <span id="patient-codenum"></span></span>
             <span>شماره تماس : <span id="patient-telnum"></span></span>
@@ -151,27 +133,19 @@
           <div class="patient-add-bill">
             <form action="#">
               <div class="add-bill-inputs">
-                <label
-                  ><input type="date" name="date" placeholder="تاریخ"
-                /></label>
-                <label
-                  ><input type="number" name="visit" placeholder="ویزیت"
-                /></label>
-                <label
-                  ><input type="number" name="equipment" placeholder="مصرفی"
-                /></label>
-                <label
-                  ><input type="number" name="income" placeholder="دریافتی"
-                /></label>
+                <label><input type="date" name="date" placeholder="تاریخ" /></label>
+                <label><input type="number" name="visit" placeholder="ویزیت" /></label>
+                <label><input type="number" name="equipment" placeholder="مصرفی" /></label>
+                <label><input type="number" name="income" placeholder="دریافتی" /></label>
               </div>
               <textarea placeholder="توضیحات" name="desc" id="desc"></textarea>
               <button id="add-bill" type="button" href="#">افزودن</button>
             </form>
           </div>
-          <div class="patient-account-bill">
+          <div class="patient-bills-bill">
             <table>
               <thead>
-                <tr class="table100-head">
+                <tr class="table-head">
                   <th class="column1">ردیف</th>
                   <th class="column2">تاریخ</th>
                   <th class="column3">ویزیت</th>
@@ -209,6 +183,45 @@
             </table>
           </div>
           <button id="close-bill-btn">بستن</button>
+        </div>
+
+        <div class="delete-confirm hidden">
+          <div class="delete-confirm-content">
+            <span id="delete-confirm-bill-text" class="hidden">آیا میخواهید این صورت حساب را حذف کنید ؟ </span>
+            <span id="delete-confirm-patient-text" class="hidden"
+              >آیا میخواهید بیمار <span id="deleted-patient-name">بیمار شماره یک </span> را حذف کنید ؟
+            </span>
+          </div>
+          <button id="delete-yes-btn">حذف</button>
+          <button id="delete-no-btn">انصراف</button>
+        </div>
+
+        <div class="edit-confirm hidden">
+          <div class="edit-confirm-content">
+            <div id="edit-confirm-bill-text" class="hidden">
+              <form action="#">
+                <div class="add-bill-inputs">
+                  <input type="date" name="date" placeholder="تاریخ" />
+                  <input type="number" name="visit" placeholder="ویزیت" />
+                  <input type="number" name="equipment" placeholder="مصرفی" />
+                  <input type="number" name="income" placeholder="دریافتی" />
+                </div>
+                <textarea placeholder="توضیحات" name="desc" id="desc"></textarea>
+              </form>
+            </div>
+            <div id="edit-confirm-patient-text" class="hidden">
+              <form action="#">
+                <div class="info">
+                  <input class="fname" type="text" name="fullName" placeholder="نام بیمار" />
+                  <input type="text" name="codeNum" placeholder="کد ملی" />
+                  <input type="tel" name="telNum" placeholder="شماره تماس" />
+                  <input type="text" name="adderes" placeholder="آدرس" />
+                </div>
+              </form>
+            </div>
+          </div>
+          <button id="edit-yes-btn">اصلاح</button>
+          <button id="edit-no-btn">انصراف</button>
         </div>
       </div>
     </div>

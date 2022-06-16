@@ -24,7 +24,7 @@
   z-index: 1;
 }
 
-.container-table100 {
+.container {
   width: 100%;
   min-height: 100vh;
   background: #c850c0;
@@ -46,19 +46,19 @@
   position: relative;
 }
 
-.wrap-table100,
-.form-wrap {
+.patients-table,
+.top-bar {
   width: 100%;
   max-width: 1170px;
 }
 
-.form-wrap {
+.top-bar {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
 }
 
-.form-content {
+.top-bar-content {
   background-color: #fff;
   width: 100%;
   display: flex;
@@ -78,38 +78,38 @@
   display: none;
 }
 
-#nurse:checked ~ .form-content div[data-form="nurse"] {
+#nurse:checked ~ .top-bar-content div[data-form="nurse"] {
   display: flex;
 }
 
-#nurse:checked ~ .form-titles label[for="nurse"] {
+#nurse:checked ~ .top-bar-titles label[for="nurse"] {
   background-color: #fff;
   color: #222;
 }
 
-#add-patient:checked ~ .form-content div[data-form="add-patient"] {
+#add-patient:checked ~ .top-bar-content div[data-form="add-patient"] {
   display: block;
 }
 
-#add-patient:checked ~ .form-titles label[for="add-patient"] {
+#add-patient:checked ~ .top-bar-titles label[for="add-patient"] {
   background-color: #fff;
   color: #222;
 }
 
-#more:checked ~ .form-content div[data-form="more"] {
+#more:checked ~ .top-bar-content div[data-form="more"] {
   display: block;
 }
 
-#more:checked ~ .form-titles label[for="more"] {
+#more:checked ~ .top-bar-titles label[for="more"] {
   background-color: #fff;
   color: #222;
 }
 
-#hidden:checked ~ .form-titles label {
+#hidden:checked ~ .top-bar-titles label {
   border-radius: 10px;
 }
 
-.form-titles {
+.top-bar-titles {
   display: flex;
   gap: 2px;
 }
@@ -167,7 +167,7 @@ table th.r {
   text-align: center;
 } */
 
-.table100-head th {
+.table-head th {
   font-family: OpenSans-Regular;
   font-size: 18px;
   color: #fff;
@@ -272,11 +272,11 @@ button:hover {
   background: rgba(54, 48, 74, 0.8);
 }
 
-.form-wrap button {
+.top-bar button {
   background-color: rgb(140, 187, 161);
 }
 
-.form-wrap button:hover {
+.top-bar button:hover {
   background-color: rgb(140, 187, 140);
 }
 
@@ -399,7 +399,9 @@ a {
   display: none;
 }
 
-.patient-account {
+.patient-bills,
+.delete-confirm,
+.edit-confirm {
   position: fixed;
   margin-left: auto;
   margin-right: auto;
@@ -466,11 +468,13 @@ a {
   flex: 0 0 45px;
 }
 
-.patient-account.hidden {
+.patient-bills.hidden,
+.delete-confirm.hidden,
+.edit-confirm.hidden {
   display: none;
 }
 
-.patient-account-info {
+.patient-bills-info {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -478,12 +482,12 @@ a {
   padding: 1rem 0;
 }
 
-.patient-account-info > span {
+.patient-bills-info > span {
   padding: 10px 5px;
   color: #555555;
 }
 
-.patient-account-bill {
+.patient-bills-bill {
   overflow-y: auto;
   position: relative;
   border: 2px dashed rgb(198, 193, 212);
@@ -504,27 +508,34 @@ tbody .edit-bill {
   background-color: #5f7aff;
 }
 
-.patient-account-bill .delete-bill {
+.patient-bills-bill .delete-bill {
   visibility: hidden;
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
-.patient-account-bill tbody tr:hover .delete-bill {
+.patient-bills-bill tbody tr:hover .delete-bill {
   visibility: visible;
   opacity: 1;
 }
 
-.patient-account-bill table thead {
+.patient-bills-bill table thead {
   position: sticky;
   top: 0;
   z-index: 1;
 }
 
-.patient-account > button {
+.patient-bills > button {
   width: 100px;
   display: block;
   margin: 10px auto;
+}
+
+.delete-confirm,
+.edit-confirm {
+  width: min(50%, 30rem);
+  height: max-content;
+  top: 5vh;
 }
 
 input::-webkit-outer-spin-button,
@@ -586,13 +597,7 @@ input[type="number"] {
   color: #1e1e1e;
   font-size: 0.7rem;
   background-color: rgb(179, 179, 179);
-  background: linear-gradient(
-    104deg,
-    rgba(179, 179, 179, 1) 31%,
-    rgba(234, 234, 234, 1) 35%,
-    rgba(234, 234, 234, 1) 38%,
-    rgba(179, 179, 179, 1) 41%
-  );
+  background: linear-gradient(104deg, rgba(179, 179, 179, 1) 31%, rgba(234, 234, 234, 1) 35%, rgba(234, 234, 234, 1) 38%, rgba(179, 179, 179, 1) 41%);
   background-size: 300%;
   animation: preloader 1.5s infinite;
   border-bottom: 1px solid;
@@ -622,32 +627,32 @@ input[type="number"] {
     display: block;
   }
 
-  .patient-account-info {
+  .patient-bills-info {
     padding: 0;
   }
 
-  .table100 table thead {
+  .table table thead {
     display: none;
   }
 
-  .patient-account-bill .delete-bill {
+  .patient-bills-bill .delete-bill {
     visibility: visible;
     opacity: 1;
   }
 
-  .patient-account-bill {
+  .patient-bills-bill {
     border-top: 2px solid #36304a;
   }
 
-  .patient-account-bill table thead {
+  .patient-bills-bill table thead {
     top: -230px;
   }
 
-  .patient-account-bill table thead tr:first-child {
+  .patient-bills-bill table thead tr:first-child {
     display: none;
   }
 
-  .patient-account-bill table thead tr:last-child {
+  .patient-bills-bill table thead tr:last-child {
     padding-top: 0;
   }
 
@@ -661,7 +666,7 @@ input[type="number"] {
   }
 
   table tbody tr,
-  .patient-account-bill table thead tr {
+  .patient-bills-bill table thead tr {
     height: auto;
     padding: 37px 0;
     display: flex;
@@ -670,7 +675,7 @@ input[type="number"] {
     margin-bottom: 2px;
   }
 
-  .patient-account-bill table thead tr td {
+  .patient-bills-bill table thead tr td {
     border: 0;
   }
 
@@ -679,25 +684,25 @@ input[type="number"] {
   }
 
   table tbody tr td,
-  .patient-account-bill table thead tr td {
+  .patient-bills-bill table thead tr td {
     padding-right: 40%;
     margin-bottom: 24px;
   }
 
   table tbody tr td:first-child,
-  .patient-account-bill table thead tr td:first-child {
+  .patient-bills-bill table thead tr td:first-child {
     background-color: #36304a;
     color: #fff;
   }
 
   table tbody tr td:last-child,
-  .patient-account-bill table thead tr td:last-child {
+  .patient-bills-bill table thead tr td:last-child {
     margin-bottom: 0;
     padding: 5px 0;
   }
 
   table tbody tr td:before,
-  .patient-account-bill table thead tr td:before {
+  .patient-bills-bill table thead tr td:before {
     font-family: OpenSans-Regular;
     font-size: 14px;
     color: #999999;
@@ -737,23 +742,23 @@ input[type="number"] {
     content: "";
   }
 
-  .patient-account-bill table tbody tr td:nth-child(2):before,
-  .patient-account-bill table thead tr td:nth-child(2):before {
+  .patient-bills-bill table tbody tr td:nth-child(2):before,
+  .patient-bills-bill table thead tr td:nth-child(2):before {
     content: "تاریخ";
   }
 
-  .patient-account-bill table tbody tr td:nth-child(3):before,
-  .patient-account-bill table thead tr td:nth-child(3):before {
+  .patient-bills-bill table tbody tr td:nth-child(3):before,
+  .patient-bills-bill table thead tr td:nth-child(3):before {
     content: "ویزیت";
   }
 
-  .patient-account-bill table tbody tr td:nth-child(4):before,
-  .patient-account-bill table thead tr td:nth-child(4):before {
+  .patient-bills-bill table tbody tr td:nth-child(4):before,
+  .patient-bills-bill table thead tr td:nth-child(4):before {
     content: "مصرفی";
   }
 
-  .patient-account-bill table tbody tr td:nth-child(5):before,
-  .patient-account-bill table thead tr td:nth-child(5):before {
+  .patient-bills-bill table tbody tr td:nth-child(5):before,
+  .patient-bills-bill table thead tr td:nth-child(5):before {
     content: "دریافتی";
   }
 
@@ -795,7 +800,7 @@ input[type="number"] {
 }
 
 @media (max-width: 500px) {
-  .container-table100 {
+  .container {
     padding-left: 15px;
     padding-right: 15px;
   }

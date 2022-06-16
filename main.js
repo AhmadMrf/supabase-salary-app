@@ -6,12 +6,12 @@ const supabaseKey =
 const database = createClient(supabaseUrl, supabaseKey);
 
 const wrapper = document.querySelector(".limiter");
-const topBarContent = document.querySelector(".form-content");
+const topBarContent = document.querySelector(".top-bar-content");
 const loginLabel = document.querySelector("#login-label");
 const loginContent = document.querySelector("#login-content");
 const patientTbody = document.querySelector("table > tbody");
 const addPatientSection = document.querySelector("#add-patient-form");
-const patientBill = document.querySelector(".patient-account");
+const patientBill = document.querySelector(".patient-bills");
 const dialogBillTbody = patientBill.querySelector("tbody");
 let errorBox = document.querySelector("#error-box");
 
@@ -175,9 +175,7 @@ async function changeSignState(state, clickedBtn) {
 
 //get user data (loginState) or null as argument
 function setLabelLoginTab(loginState) {
-  loginLabel.textContent = loginState
-    ? `درمانگر : ${loginState.user_metadata.fullName}`
-    : "ورود - ثبت نام";
+  loginLabel.textContent = loginState ? `درمانگر : ${loginState.user_metadata.fullName}` : "ورود - ثبت نام";
 }
 
 //get user data (loginState) or null and patients (patients array) as argument
@@ -189,9 +187,7 @@ function setLoginContent(loginState, patients) {
         <div class="panel-info">
           <span>${loginState.user_metadata.fullName}</span>
           <span>${loginState.user_metadata.job}</span>
-          <span>تعداد بیماران : <span id="patient-number" >${
-            patients ? patients.length : "-"
-          }</span></span>
+          <span>تعداد بیماران : <span id="patient-number" >${patients ? patients.length : "-"}</span></span>
         </div>
         <button name="signoutBtn" type="button" href="#">خروج</button>
       </div>
@@ -256,9 +252,7 @@ function setLoginContent(loginState, patients) {
 async function setTableContent(loginState, patients) {
   if (loginState) {
     if (patients) {
-      patientTbody.innerHTML = patients
-        .map((trs) => '<tr class="preloader-box"></tr>')
-        .join("");
+      patientTbody.innerHTML = patients.map((trs) => '<tr class="preloader-box"></tr>').join("");
 
       let bills = await getPatientBillData();
 
@@ -285,24 +279,16 @@ async function setTableContent(loginState, patients) {
           <td class="column4">${cost ?? 0}</td>
           <td class="column5">${incomes ?? 0}</td>
           <td class="column6">
-            <button class="delete-patient" data-patientid="${
-              patient.id
-            }" >حذف</button>
-            <button class="edit-patient" data-patientid="${
-              patient.id
-            }" >اصلاح</button>
-            <button class="edit-bills" data-patientid="${
-              patient.id
-            }" > صورت حساب <span>(${billsLength})<span> </button></td>
+            <button class="delete-patient" data-patientid="${patient.id}" >حذف</button>
+            <button class="edit-patient" data-patientid="${patient.id}" >اصلاح</button>
+            <button class="edit-bills" data-patientid="${patient.id}" > صورت حساب <span>(${billsLength})<span> </button></td>
           </tr>`);
         })
         .join("");
 
       let editPatients = patientTbody.querySelectorAll(".edit-patient");
       editPatients.forEach((editPatient) => {
-        editPatient.addEventListener("click", (e) =>
-          editPatientFromDb(e.target.dataset.patientid)
-        );
+        editPatient.addEventListener("click", (e) => editPatientFromDb(e.target.dataset.patientid));
       });
 
       let deletePatients = patientTbody.querySelectorAll(".delete-patient");
@@ -314,9 +300,7 @@ async function setTableContent(loginState, patients) {
       });
       let editBtns = patientTbody.querySelectorAll(".edit-bills");
       editBtns.forEach((editBtn) => {
-        editBtn.addEventListener("click", (e) =>
-          openPatientBill(e, patients, bills)
-        );
+        editBtn.addEventListener("click", (e) => openPatientBill(e, patients, bills));
       });
 
       if (!patients.length) {
@@ -330,13 +314,10 @@ async function setTableContent(loginState, patients) {
       <td class="fake-td" colspan="4">اختلال در دریافت اطلاعات بیماران </td>
       <td class="fake-td" colspan="2"><button id="refreshBtn" >مجدد تلاش کنید</button></td>
       </tr>`;
-      document
-        .querySelector("#refreshBtn")
-        .addEventListener("click", () => setupApp(database.auth.user()));
+      document.querySelector("#refreshBtn").addEventListener("click", () => setupApp(database.auth.user()));
     }
   } else {
-    patientTbody.innerHTML =
-      '<tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr>';
+    patientTbody.innerHTML = '<tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr>';
   }
 }
 
@@ -346,9 +327,7 @@ async function setTableContent(loginState, patients) {
 async function openPatientBill(e, patients, patientBillData) {
   wrapper.classList.add("shadow");
   patientBill.classList.remove("hidden");
-  let selectedPatient = patients.find(
-    (patient) => patient.id == e.target.dataset.patientid
-  );
+  let selectedPatient = patients.find((patient) => patient.id == e.target.dataset.patientid);
 
   const patientFullname = patientBill.querySelector("#patient-fullname");
   const patientCodenum = patientBill.querySelector("#patient-codenum");
@@ -384,18 +363,9 @@ async function openPatientBill(e, patients, patientBillData) {
       created_at: addBillForm.elements.date.valueAsDate || new Date(),
       patient_id: selectedPatient.id,
       nurse_id: database.auth.user().id,
-      visit:
-        addBillForm.elements.visit.value == ""
-          ? 0
-          : addBillForm.elements.visit.value,
-      income:
-        addBillForm.elements.income.value == ""
-          ? 0
-          : addBillForm.elements.income.value,
-      equipment:
-        addBillForm.elements.equipment.value == ""
-          ? 0
-          : addBillForm.elements.equipment.value,
+      visit: addBillForm.elements.visit.value == "" ? 0 : addBillForm.elements.visit.value,
+      income: addBillForm.elements.income.value == "" ? 0 : addBillForm.elements.income.value,
+      equipment: addBillForm.elements.equipment.value == "" ? 0 : addBillForm.elements.equipment.value,
       desc: addBillForm.elements.desc.value,
     };
     await addBillToDb(newBillData);
@@ -438,9 +408,7 @@ function renderpatientBill(patientid, bills) {
 
     let editBills = dialogBillTbody.querySelectorAll(".edit-bill");
     editBills.forEach((editBill) => {
-      editBill.addEventListener("click", (e) =>
-        openPatientBill(e, patients, bills)
-      );
+      editBill.addEventListener("click", (e) => openPatientBill(e, patients, bills));
     });
     let removeBills = dialogBillTbody.querySelectorAll(".delete-bill");
     removeBills.forEach((removeBill) => {
@@ -460,10 +428,7 @@ function renderpatientBill(patientid, bills) {
 async function removeBillFromDb(billid, patientid) {
   console.log("delete bill");
 
-  let { billData, billError } = await database
-    .from("bills")
-    .delete()
-    .match({ id: billid });
+  let { billData, billError } = await database.from("bills").delete().match({ id: billid });
 
   if (billError) {
     errorManage(billError);
@@ -530,8 +495,7 @@ function setAddPatientTab(loginState) {
       addPatientBtn.classList.remove("preloader-btn");
     });
   } else {
-    addPatientSection.innerHTML =
-      "<span>ابتدا وارد حساب کاربری خود شوید</span>";
+    addPatientSection.innerHTML = "<span>ابتدا وارد حساب کاربری خود شوید</span>";
   }
 }
 
@@ -544,11 +508,9 @@ async function addPatientToDb() {
   let adderes = addPatientForm.elements.adderes.value;
   let nurse_id = database.auth.user().id;
 
-  let { error } = await database
-    .from("patients")
-    .insert([{ fullName, codeNum, telNum, adderes, nurse_id }], {
-      returning: "minimal",
-    });
+  let { error } = await database.from("patients").insert([{ fullName, codeNum, telNum, adderes, nurse_id }], {
+    returning: "minimal",
+  });
 
   if (error) {
     errorManage(error);
@@ -566,15 +528,9 @@ async function addPatientToDb() {
 async function deletePatientFromDb(patientId) {
   console.log("delete patient");
 
-  let { billsData, billsError } = await database
-    .from("bills")
-    .delete()
-    .match({ patient_id: patientId });
+  let { billsData, billsError } = await database.from("bills").delete().match({ patient_id: patientId });
 
-  let { patientData, patientError } = await database
-    .from("patients")
-    .delete()
-    .match({ id: patientId });
+  let { patientData, patientError } = await database.from("patients").delete().match({ id: patientId });
 
   if (patientError) {
     errorManage(patientError);
@@ -591,10 +547,7 @@ async function deletePatientFromDb(patientId) {
 //edit patients
 async function editPatientFromDb(patientId) {
   console.log("edit patient");
-  const { error, data } = await database
-    .from("patients")
-    .update({ fullName: "edited full" })
-    .eq("id", patientId);
+  const { error, data } = await database.from("patients").update({ fullName: "edited full" }).eq("id", patientId);
 
   if (error) {
     errorManage(error);
@@ -661,11 +614,7 @@ function isFormValid(form) {
 
       case "tel":
         // console.log("tel");
-        if (
-          inputValue.length < 10 ||
-          inputValue.length > 11 ||
-          isNaN(inputValue)
-        ) {
+        if (inputValue.length < 10 || inputValue.length > 11 || isNaN(inputValue)) {
           invalidAlert(item, "شماره صحیح وارد کنید (با کد شهر)");
           // return true;
         }
