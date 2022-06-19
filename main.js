@@ -13,6 +13,14 @@ const patientTbody = document.querySelector("table > tbody");
 const addPatientSection = document.querySelector("#add-patient-form");
 const patientBill = document.querySelector(".patient-bills");
 const dialogBillTbody = patientBill.querySelector("tbody");
+const deleteConfirmBox = document.querySelector(".delete-confirm");
+const editConfirmBox = document.querySelector(".edit-confirm");
+const deleteConfirmContent = deleteConfirmBox.querySelector(".delete-confirm-content");
+const editConfirmContent = editConfirmBox.querySelector(".edit-confirm-content");
+const deleteYesBtn = deleteConfirmBox.querySelector("#delete-yes-btn");
+const editYesBtn = editConfirmBox.querySelector("#edit-yes-btn");
+const confirmNoBtns = document.querySelectorAll(".confirm-no-btn");
+
 let errorBox = document.querySelector("#error-box");
 
 let signinForm; //declare in setLoginContent func
@@ -288,14 +296,33 @@ async function setTableContent(loginState, patients) {
 
       let editPatients = patientTbody.querySelectorAll(".edit-patient");
       editPatients.forEach((editPatient) => {
-        editPatient.addEventListener("click", (e) => editPatientFromDb(e.target.dataset.patientid));
+        editPatient.addEventListener("click", (e) => {
+          // wrapper.classList.add("shadow");
+          // editConfirmBox.classList.remove("hidden");
+          manageConfirms("edit", { patients: true, patients, patientid: e.target.dataset.patientid });
+          // or
+          // editConfirmPatient()
+
+          // editPatientFromDb(e.target.dataset.patientid)
+        });
       });
 
       let deletePatients = patientTbody.querySelectorAll(".delete-patient");
       deletePatients.forEach((deletePatient) => {
         deletePatient.addEventListener("click", (e) => {
-          e.currentTarget.classList.add("preloader-btn");
-          deletePatientFromDb(e.target.dataset.patientid);
+          // wrapper.classList.add("shadow");
+          // deleteConfirmBox.classList.remove("hidden");
+          // deleteConfirmContent.innerHTML = `
+          // <span id="delete-confirm-patient-text" class="hidden"> آیا میخواهید بیمار
+          // "<span id="deleted-patient-name">kk </span>"
+          //  را حذف کنید؟ </span>
+          // `;
+          manageConfirms("delete", { patients: true, patients, patientid: e.target.dataset.patientid });
+          // or
+          // deleteConfirmPatient()
+
+          // e.currentTarget.classList.add("preloader-btn");
+          // deletePatientFromDb(e.target.dataset.patientid);
         });
       });
       let editBtns = patientTbody.querySelectorAll(".edit-bills");
@@ -325,7 +352,7 @@ async function setTableContent(loginState, patients) {
 //so filter and show bills that are relative to that patient
 // and add event listener to close btn
 async function openPatientBill(e, patients, patientBillData) {
-  wrapper.classList.add("shadow");
+  // wrapper.classList.add("shadow");
   patientBill.classList.remove("hidden");
   let selectedPatient = patients.find((patient) => patient.id == e.target.dataset.patientid);
 
@@ -346,7 +373,7 @@ async function openPatientBill(e, patients, patientBillData) {
   renderpatientBill(selectedPatient.id, patientBillData);
 
   function closeDialogBill() {
-    wrapper.classList.remove("shadow");
+    // wrapper.classList.remove("shadow");
     patientBill.classList.add("hidden");
     dialogBillTbody.innerHTML = "";
     setTableContent(database.auth.user(), patients);
@@ -380,10 +407,10 @@ async function openPatientBill(e, patients, patientBillData) {
 //render table for each patient that selected . and add event listener on buttons
 function renderpatientBill(patientid, bills) {
   console.log("renderbill");
-  let dialogBillContent = bills
-    .filter((bill) => {
-      return bill.patient_id == patientid;
-    })
+  let patientBills = bills.filter((bill) => {
+    return bill.patient_id == patientid;
+  });
+  let dialogBillContent = patientBills
     .map((bill, i) => {
       return `
     <tr>
@@ -408,13 +435,28 @@ function renderpatientBill(patientid, bills) {
 
     let editBills = dialogBillTbody.querySelectorAll(".edit-bill");
     editBills.forEach((editBill) => {
-      editBill.addEventListener("click", (e) => openPatientBill(e, patients, bills));
+      editBill.addEventListener("click", (e) => {
+        // wrapper.classList.add("shadow");
+        // editConfirmBox.classList.remove("hidden");
+        manageConfirms("edit", { bills: true, patientBills, patientid, billid: e.target.dataset.bill });
+
+        // or
+        // editConfirmBill()
+
+        // openPatientBill(e, patients, bills)
+      });
     });
     let removeBills = dialogBillTbody.querySelectorAll(".delete-bill");
     removeBills.forEach((removeBill) => {
       removeBill.addEventListener("click", (e) => {
-        e.currentTarget.classList.add("preloader-btn");
-        removeBillFromDb(e.target.dataset.bill, patientid);
+        // wrapper.classList.add("shadow");
+        // deleteConfirmBox.classList.remove("hidden");
+        manageConfirms("delete", { bills: true, patientBills, patientid, billid: e.target.dataset.bill });
+        //or
+        // deleteConfirmBill()
+
+        // e.currentTarget.classList.add("preloader-btn");
+        // removeBillFromDb(e.target.dataset.bill, patientid);
       });
     });
   } else {
@@ -524,7 +566,17 @@ async function addPatientToDb() {
   }
 }
 
-//remove patient and bills
+// function manageConfirms() {
+//   function deleteConfirmPatient(patientId) {}
+//   function deleteConfirmBill() {}
+
+//   function editConfirmPatient() {}
+//   function editConfirmBill() {}
+
+//   function cancelConfirms() {}
+// }
+
+//remove patient ( and bills)
 async function deletePatientFromDb(patientId) {
   console.log("delete patient");
 
@@ -633,6 +685,51 @@ function isFormValid(form) {
   return isValid;
 }
 
+//type : 'delete' or 'edit'
+//Db : {}
+function manageConfirms(type, Db) {
+  wrapper.classList.add("shadow");
+  deleteConfirmBox.classList.remove("hidden");
+  console.log(Db);
+  if (type == "delete" && Db.patients) {
+    let patientFullname = Db.patients.find((patient) => patient.id === Db.patientid).fullName;
+    deleteConfirmContent.innerHTML = `
+    <span>
+    آیا میخواهید بیمار"
+    <span>${patientFullname}</span>" را حذف کنید؟
+  </span>`;
+  }
+  if (type == "delete" && Db.bills) {
+    deleteConfirmContent.innerHTML = `<span >آیا میخواهید این صورت حساب را حذف کنید ؟ </span>`;
+  }
+  if (type == "edit" && Db.patients) {
+    console.log(55);
+    editConfirmContent.innerHTML = `
+        <div id="edit-confirm-patient-text" class="edit-confirm-text hidden">
+          <form action="#">
+            <span>نام بیمار :<input class="fname" type="text" name="fullName" placeholder="" /></span>
+            <span>کد ملی :<input type="text" name="codeNum" placeholder="" /></span>
+            <span>شماره تماس :<input type="tel" name="telNum" placeholder="" /></span>
+            <span>آدرس :<input type="text" name="adderes" placeholder="" /></span>
+          </form>
+        </div>
+    `;
+  }
+  if (type == "edit" && Db.bills) {
+    editConfirmContent.innerHTML = `
+      <div id="edit-confirm-bill-text" class="edit-confirm-text hidden">
+        <form action="#">
+          <span>تاریخ :<input type="date" name="date" placeholder="" /></span>
+          <span>ویزیت :<input type="number" name="visit" placeholder="" /></span>
+          <span>مصرفی :<input type="number" name="equipment" placeholder="" /></span>
+          <span>دریافتی :<input type="number" name="income" placeholder="" /></span>
+          <span>توضیحات :<textarea placeholder="" name="desc" id="desc"></textarea></span>
+        </form>
+      </div>
+    `;
+  }
+}
+
 async function setupApp(loginState) {
   console.log("setup");
   topBarContent.classList.add("preloader-box");
@@ -649,3 +746,21 @@ async function setupApp(loginState) {
 
   setTableContent(loginState, patients);
 }
+
+deleteYesBtn.addEventListener("click", (e) => {
+  console.log("dy");
+});
+
+editYesBtn.addEventListener("click", (e) => {
+  console.log("ey");
+});
+
+confirmNoBtns.forEach((confirmBtn) => {
+  confirmBtn.addEventListener("click", (e) => {
+    wrapper.classList.remove("shadow");
+    deleteConfirmBox.classList.add("hidden");
+    editConfirmBox.classList.add("hidden");
+    deleteConfirmContent.innerHTML = "";
+    editConfirmContent.innerHTML = "";
+  });
+});
