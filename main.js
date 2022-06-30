@@ -17,9 +17,9 @@ const deleteConfirmBox = document.querySelector(".delete-confirm");
 const editConfirmBox = document.querySelector(".edit-confirm");
 // const deleteConfirmContent = deleteConfirmBox.querySelector(".delete-confirm-content");
 // const editConfirmContent = editConfirmBox.querySelector(".edit-confirm-content");
-let deleteYesBtn = null
-let editYesBtn = null
-let confirmNoBtn = null
+let deleteYesBtn = null;
+let editYesBtn = null;
+let confirmNoBtn = null;
 
 let errorBox = document.querySelector("#error-box");
 
@@ -299,7 +299,7 @@ async function setTableContent(loginState, patients) {
         editPatient.addEventListener("click", (e) => {
           // wrapper.classList.add("shadow");
           // editConfirmBox.classList.remove("hidden");
-          manageConfirms("edit", { patients: true, allPatients: patients , patientid: e.target.dataset.patientid });
+          manageConfirms("edit", { patients: true, allPatients: patients, patientid: e.target.dataset.patientid });
           // or
           // editConfirmPatient()
 
@@ -467,13 +467,26 @@ function renderpatientBill(patientid, bills) {
 }
 
 //remove bill for each patient from bills table on database
-async function removeBillFromDb(billid, patientid) {
+async function deleteBillFromDb(billid, patientid) {
   console.log("delete bill");
 
   let { billData, billError } = await database.from("bills").delete().match({ id: billid });
 
   if (billError) {
     errorManage(billError);
+  } else {
+    let newBills = await getPatientBillData(patientid);
+    renderpatientBill(patientid, newBills);
+  }
+}
+
+// edit bills
+async function editBillFromDb(billid, patientid, editedBill) {
+  console.log("edit bill");
+  const { error, data } = await database.from("bills").update(editedBill).eq("id", billid);
+
+  if (error) {
+    errorManage(error);
   } else {
     let newBills = await getPatientBillData(patientid);
     renderpatientBill(patientid, newBills);
@@ -498,7 +511,7 @@ async function addBillToDb(billData) {
 }
 
 //get datas from bills table and return data or null
-async function getPatientBillData(patientId) {
+async function getPatientBillData(patientid) {
   console.log("get bill");
   let { data, error } = await database.from("bills");
 
@@ -566,23 +579,13 @@ async function addPatientToDb() {
   }
 }
 
-// function manageConfirms() {
-//   function deleteConfirmPatient(patientId) {}
-//   function deleteConfirmBill() {}
-
-//   function editConfirmPatient() {}
-//   function editConfirmBill() {}
-
-//   function cancelConfirms() {}
-// }
-
 //remove patient ( and bills)
-async function deletePatientFromDb(patientId) {
+async function deletePatientFromDb(patientid) {
   console.log("delete patient");
 
-  let { billsData, billsError } = await database.from("bills").delete().match({ patient_id: patientId });
+  let { billsData, billsError } = await database.from("bills").delete().match({ patient_id: patientid });
 
-  let { patientData, patientError } = await database.from("patients").delete().match({ id: patientId });
+  let { patientData, patientError } = await database.from("patients").delete().match({ id: patientid });
 
   if (patientError) {
     errorManage(patientError);
@@ -597,9 +600,9 @@ async function deletePatientFromDb(patientId) {
 }
 
 //edit patients
-async function editPatientFromDb(patientId) {
+async function editPatientFromDb(patientid, editedPatient) {
   console.log("edit patient");
-  const { error, data } = await database.from("patients").update({ fullName: "edited full" }).eq("id", patientId);
+  const { error, data } = await database.from("patients").update(editedPatient).eq("id", patientid);
 
   if (error) {
     errorManage(error);
@@ -640,7 +643,7 @@ function isFormValid(form) {
           !inputValue
             .toLowerCase()
             .match(
-              // /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+              /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             )
         ) {
           invalidAlert(item, "ایمیل به درستی وارد نشده");
@@ -688,10 +691,11 @@ function isFormValid(form) {
 //type : 'delete' or 'edit'
 //Db : {}
 function manageConfirms(type, Db) {
+  let editedData = null;
   wrapper.classList.add("shadow");
   console.log(Db);
   if (type == "delete" && Db.patients) {
-  deleteConfirmBox.classList.remove("hidden");
+    deleteConfirmBox.classList.remove("hidden");
     let patientFullname = Db.allPatients.find((patient) => patient.id === Db.patientid).fullName;
     deleteConfirmBox.innerHTML = `
     <div class="delete-confirm-content">
@@ -705,24 +709,24 @@ function manageConfirms(type, Db) {
       <button class="confirm-no-btn">انصراف</button>
     </div>
   `;
-    console.log('dp_c');
+    console.log("dp_c");
   }
   if (type == "delete" && Db.bills) {
-  deleteConfirmBox.classList.remove("hidden");
+    deleteConfirmBox.classList.remove("hidden");
     deleteConfirmBox.innerHTML = `
     <div class="delete-confirm-content">
       <span >آیا میخواهید این صورت حساب را حذف کنید ؟ </span>
     </div>
     <div class="delete-confirm-btns">
-          <button id="delete-yes-btn">حذف</button>
-          <button class="confirm-no-btn">انصراف</button>
-        </div>
+      <button id="delete-yes-btn">حذف</button>
+      <button class="confirm-no-btn">انصراف</button>
+    </div>
       `;
-    console.log('db_c');
+    console.log("db_c");
   }
   if (type == "edit" && Db.patients) {
-    let editedPatient = Db.allPatients.find(editedPatient => editedPatient.id === Db.patientid)
-  editConfirmBox.classList.remove("hidden");
+    let editedPatient = Db.allPatients.find((editedPatient) => editedPatient.id === Db.patientid);
+    editConfirmBox.classList.remove("hidden");
     editConfirmBox.innerHTML = `
     <div class="edit-confirm-content">
         <div id="edit-confirm-patient-text" class="edit-confirm-text hidden">
@@ -735,17 +739,16 @@ function manageConfirms(type, Db) {
         </div>
         </div>
         <div class="edit-confirm-btns">
-                    <button id="edit-yes-btn">اصلاح</button>
-                    <button class="confirm-no-btn">انصراف</button>
-                  </div>
+          <button id="edit-yes-btn">اصلاح</button>
+          <button class="confirm-no-btn">انصراف</button>
+        </div>
         `;
     console.log(Db);
-    
   }
   if (type == "edit" && Db.bills) {
-    let editedBill = Db.patientBills.find(editedBill => editedBill.id == Db.billid)
-    
-  editConfirmBox.classList.remove("hidden");
+    let editedBill = Db.patientBills.find((editedBill) => editedBill.id == Db.billid);
+
+    editConfirmBox.classList.remove("hidden");
     editConfirmBox.innerHTML = `
     <div class="edit-confirm-content">
       <div id="edit-confirm-bill-text" class="edit-confirm-text hidden">
@@ -761,17 +764,56 @@ function manageConfirms(type, Db) {
       </div>
       </div>
       <div class="edit-confirm-btns">
-                  <button id="edit-yes-btn">اصلاح</button>
-                  <button class="confirm-no-btn">انصراف</button>
-                </div>
+        <button id="edit-yes-btn">اصلاح</button>
+        <button class="confirm-no-btn">انصراف</button>
+      </div>
       `;
-    
   }
+  let editedForm = editConfirmBox.querySelector("form");
   deleteYesBtn = deleteConfirmBox?.querySelector("#delete-yes-btn");
   editYesBtn = editConfirmBox?.querySelector("#edit-yes-btn");
   confirmNoBtn = document.querySelector(".confirm-no-btn");
-  
-  confirmNoBtn.addEventListener("click",hideConfirms);
+
+  // acceptConfirms(type, Db, editedData);
+  confirmNoBtn.addEventListener("click", hideConfirms);
+  editYesBtn
+    ? editYesBtn.addEventListener("click", async () => {
+        if (!isFormValid(editedForm)) return;
+        editYesBtn.classList.add("preloader-btn");
+        if (Db.patients) {
+          editedData = {
+            fullName: editedForm.elements.fullName.value,
+            codeNum: editedForm.elements.codeNum.value,
+            telNum: editedForm.elements.telNum.value,
+            adderes: editedForm.elements.adderes.value,
+          };
+          await editPatientFromDb(Db.patientid, editedData);
+          hideConfirms();
+          return;
+        }
+        editedData = {
+          visit: editedForm.elements.visit.value,
+          income: editedForm.elements.income.value,
+          equipment: editedForm.elements.equipment.value,
+          desc: editedForm.elements.desc.value,
+        };
+        await editBillFromDb(Db.billid, Db.patientid, editedData);
+        hideConfirms();
+      })
+    : null;
+
+  deleteYesBtn
+    ? deleteYesBtn.addEventListener("click", async () => {
+        deleteYesBtn.classList.add("preloader-btn");
+        if (Db.patients) {
+          await deletePatientFromDb(Db.patientid);
+          hideConfirms();
+          return;
+        }
+        await deleteBillFromDb(Db.billid, Db.patientid);
+        hideConfirms();
+      })
+    : null;
 }
 
 async function setupApp(loginState) {
@@ -791,26 +833,13 @@ async function setupApp(loginState) {
   setTableContent(loginState, patients);
 }
 
-// deleteYesBtn.addEventListener("click", (e) => {
-//   console.log("dy");
-//   deletePatientFromDb(patientId)
-// });
+function acceptConfirms(type, Db, editedData) {}
 
-// editYesBtn.addEventListener("click", (e) => {
-//   console.log("ey");
-// });
-
-  
-function acceptConfirms(type){
-  
-}
-function hideConfirms(){
+function hideConfirms() {
   wrapper.classList.remove("shadow");
   deleteConfirmBox.classList.add("hidden");
   editConfirmBox.classList.add("hidden");
   deleteConfirmBox.innerHTML = "";
   editConfirmBox.innerHTML = "";
-  confirmNoBtn.removeEventListener("click",hideConfirms);
-  console.log(deleteYesBtn);
-  console.log(editYesBtn);
+  confirmNoBtn.removeEventListener("click", hideConfirms);
 }

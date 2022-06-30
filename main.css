@@ -549,6 +549,7 @@ tbody .edit-bill {
 .edit-confirm-btns {
   display: flex;
   gap: 1rem;
+  width: 70%;
 }
 #delete-yes-btn,
 #edit-yes-btn {
@@ -560,15 +561,13 @@ tbody .edit-bill {
   flex-direction: column;
   padding: 1rem 0.5rem;
 }
-.edit-confirm-text form > span{
+.edit-confirm-text form > span {
   width: 100%;
 }
-.edit-confirm-text form > span > *{
+.edit-confirm-text form > span > * {
   width: 100%;
-  margin: .5rem 0;
-  border: 1px solid #000;
+  margin: 0.5rem 0;
 }
-
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
