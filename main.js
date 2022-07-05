@@ -26,7 +26,15 @@ let signupForm;
 let signoutBtn;
 let addPatientForm;
 
-let loggedInUser = database.auth.user(); // return null or user data
+// return null or user data
+async function checkUser() {
+  let user = database.auth.user();
+  if (!user) return null;
+  let [userData] = await getUserFromDb();
+  return { ...user, userData };
+}
+
+let loggedInUser = await checkUser();
 
 console.log("islog?", loggedInUser);
 
@@ -73,15 +81,18 @@ async function signInAccount() {
     errorManage(error);
     return null;
   } else {
+    loggedInUser = await checkUser();
     signinForm.reset();
-    return user;
+    console.log(loggedInUser);
+
+    return loggedInUser;
   }
 }
 
 //if signup return user info
 //if error call errorManage func
 async function signUpAccount() {
-  console.log("signup");
+  console.log("signup", loggedInUser);
   let email;
   let password;
   let fullName;
@@ -95,20 +106,32 @@ async function signUpAccount() {
     {
       email,
       password,
-    },
-    {
-      data: {
-        fullName,
-        job,
-      },
     }
+    // },
+    // {
+    //   data: {
+    //     fullName,
+    //     job,
+    //   },
+    // }
   );
   if (error) {
     errorManage(error);
     return null;
   } else {
-    signupForm.reset();
-    return user;
+    let [userData] = await addUserDataToDb({ id: user.id, fullName, job });
+    loggedInUser = { ...user, userData };
+    signinForm.reset();
+    console.log(loggedInUser);
+    return loggedInUser;
+
+    // let userData = await addUserDataToDb({ id: user.id, fullName, job });
+    // signupForm.reset();
+    // console.log(userData);
+    // let {
+    //   data: [{ fullName: userFullName, job: userJob }],
+    // } = userData;
+    // return { ...user, userFullName, userJob };
   }
 }
 
@@ -163,9 +186,30 @@ async function changeSignState(state, clickedBtn) {
   }
 }
 
+async function getUserFromDb() {
+  let { data, error } = await database.from("us");
+  if (error) {
+    errorManage(error);
+    return null;
+  }
+  console.log("getuser");
+  return data;
+}
+
+async function addUserDataToDb(userData) {
+  // let { id, fullName, job, telNum, introducer } = userData;
+  console.log("adduser");
+  let { data } = await database.from("us").insert([userData]);
+  return data;
+  // if (error) errorManage(error);
+}
+// document.body.addEventListener("click", async () => {
+//   let a = await addUserDataToDb({ id: loggedInUser.id, fullName: "new", job: "new", tellNum: 123 });
+//   console.log(a);
+// });
 //if success return data form database
 //if error return null and call errorManage func
-async function getPatientsDataFromDb() {
+async function getPatientsFromDb() {
   console.log("get");
   let { data, error } = await database.from("patients");
   if (error) {
@@ -182,7 +226,7 @@ async function addPatientToDb() {
   let codeNum = addPatientForm.elements.codeNum.value;
   let telNum = addPatientForm.elements.telNum.value;
   let adderes = addPatientForm.elements.adderes.value;
-  let nurse_id = database.auth.user().id;
+  let nurse_id = loggedInUser.id;
 
   let { error } = await database.from("patients").insert([{ fullName, codeNum, telNum, adderes, nurse_id }], {
     returning: "minimal",
@@ -191,8 +235,8 @@ async function addPatientToDb() {
   if (error) {
     errorManage(error);
   } else {
-    let user = database.auth.user();
-    let patients = user ? await getPatientsDataFromDb() : [];
+    let user = loggedInUser;
+    let patients = user ? await getPatientsFromDb() : [];
 
     setLoginTabContent(user, patients);
     setPatientsTable(user, patients);
@@ -213,8 +257,8 @@ async function deletePatientFromDb(patientid) {
   } else if (billsError) {
     errorManage(billsError);
   } else {
-    let user = database.auth.user();
-    let patients = await getPatientsDataFromDb();
+    let user = loggedInUser;
+    let patients = await getPatientsFromDb();
     setLoginTabContent(user, patients);
     setPatientsTable(user, patients);
   }
@@ -228,8 +272,8 @@ async function editPatientFromDb(patientid, editedPatient) {
   if (error) {
     errorManage(error);
   } else {
-    let user = database.auth.user();
-    let patients = user ? await getPatientsDataFromDb() : [];
+    let user = loggedInUser;
+    let patients = user ? await getPatientsFromDb() : [];
 
     setLoginTabContent(user, patients);
     setPatientsTable(user, patients);
@@ -295,7 +339,7 @@ async function getPatientBillData(patientid) {
 
 //set label of login tab
 function setLabelLoginTab(loggedInUser) {
-  loginLabel.textContent = loggedInUser ? `درمانگر : ${loggedInUser.user_metadata.fullName}` : "ورود - ثبت نام";
+  loginLabel.textContent = loggedInUser ? `درمانگر : ${loggedInUser.userData.fullName}` : "ورود - ثبت نام";
 }
 
 //get user data (loggedInUser) or null and patients (patients array) as argument
@@ -306,9 +350,10 @@ function setLoginTabContent(loggedInUser, patients) {
     // and show sign out button
     loginContent.innerHTML = `
       <div class="panel-account">
+      <img src="./pic.jpg" alt="user picture" >
         <div class="panel-info">
-          <span>${loggedInUser.user_metadata.fullName}</span>
-          <span>${loggedInUser.user_metadata.job}</span>
+          <span>${loggedInUser.userData.fullName}</span>
+          <span>${loggedInUser.userData.job}</span>
           <span>تعداد بیماران : <span id="patient-number" >${patients ? patients.length : "-"}</span></span>
         </div>
         <button name="signoutBtn" type="button" href="#">خروج</button>
@@ -442,7 +487,7 @@ async function setPatientsTable(loggedInUser, patients) {
       <td class="fake-td" colspan="4">اختلال در دریافت اطلاعات بیماران </td>
       <td class="fake-td" colspan="2"><button id="refreshBtn" >مجدد تلاش کنید</button></td>
       </tr>`;
-      document.querySelector("#refreshBtn").addEventListener("click", () => setupApp(database.auth.user()));
+      document.querySelector("#refreshBtn").addEventListener("click", () => setupApp(loggedInUser));
     }
   } else {
     patientTbody.innerHTML = '<tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr>';
@@ -475,7 +520,7 @@ async function setPatientBillsDialogContent(e, patients, patientBillData) {
   function closeBillDialog() {
     patientBill.classList.add("hidden");
     dialogBillTbody.innerHTML = "";
-    setPatientsTable(database.auth.user(), patients);
+    setPatientsTable(loggedInUser, patients);
     addNewBillBtn.removeEventListener("click", addNewBill);
     closeBillDialogBtn.removeEventListener("click", closeBillDialog);
   }
@@ -488,7 +533,7 @@ async function setPatientBillsDialogContent(e, patients, patientBillData) {
     let newBillData = {
       created_at: addBillForm.elements.date.valueAsDate || new Date(),
       patient_id: selectedPatient.id,
-      nurse_id: database.auth.user().id,
+      nurse_id: loggedInUser.id,
       visit: addBillForm.elements.visit.value == "" ? 0 : addBillForm.elements.visit.value,
       income: addBillForm.elements.income.value == "" ? 0 : addBillForm.elements.income.value,
       equipment: addBillForm.elements.equipment.value == "" ? 0 : addBillForm.elements.equipment.value,
@@ -776,7 +821,7 @@ function manageConfirms(type, Db) {
 async function setupApp(loggedInUser) {
   console.log("setup");
   topBarContent.classList.add("preloader-box");
-  let patients = loggedInUser ? await getPatientsDataFromDb() : [];
+  let patients = loggedInUser ? await getPatientsFromDb() : [];
   topBarContent.classList.remove("preloader-box");
 
   console.log("patients", patients);
