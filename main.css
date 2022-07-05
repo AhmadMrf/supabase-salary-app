@@ -283,13 +283,19 @@ button:hover {
 .panel-account {
   display: flex;
   align-items: center;
-  gap: 2rem;
-  justify-content: space-between;
+  gap: 0.5rem;
+  justify-content: space-evenly;
   width: 100%;
 }
 
 .panel-account button {
   flex: 0.5;
+}
+.panel-account img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid;
 }
 
 .panel-info {
