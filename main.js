@@ -447,7 +447,7 @@ async function setPatientsTable(loggedInUser, patients) {
           <td class="column3">${patient.telNum}</td>
           <td class="column4">${cost ?? 0}</td>
           <td class="column5">${incomes ?? 0}</td>
-          <td class="column6">
+          <td class="column7">
             <button class="delete-patient" data-patientid="${patient.id}" >حذف</button>
             <button class="edit-patient" data-patientid="${patient.id}" >اصلاح</button>
             <button class="edit-bills" data-patientid="${patient.id}" > صورت حساب <span>(${billsLength})<span> </button></td>
@@ -565,7 +565,8 @@ function renderpatientBill(patientid, bills) {
         <td class="column3">${bill.visit}</td>
         <td class="column4">${bill.equipment}</td>
         <td class="column5">${bill.income}</td>
-        <td class="column6">
+        <td class="column6">${bill.desc || " - "}</td>
+        <td class="column7">
           <button class="edit-bill" data-bill="${bill.id}" >اصلاح</button>
           <button class="delete-bill" data-bill="${bill.id}" >حذف</button>
         </td>

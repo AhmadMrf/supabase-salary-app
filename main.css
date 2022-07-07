@@ -214,23 +214,16 @@ tbody tr:hover {
 
 .column3,
 .column4,
-.column5 {
+.column5,
+.column6 {
   min-width: 100px;
 }
 
-/* .column3 {
-  width: 200px;
+td.column6 {
+  font-size: 0.7rem;
 }
 
-.column4 {
-  width: 110px;
-}
-
-.column5 {
-  width: 120px;
-} */
-
-.column6 {
+.column7 {
   /* width: 230px; */
   display: flex;
   justify-content: center;
@@ -296,6 +289,7 @@ button:hover {
   height: 50px;
   border-radius: 50%;
   border: 1px solid;
+  object-fit: cover;
 }
 
 .panel-info {
@@ -776,7 +770,7 @@ input[type="number"] {
   }
 
   table tbody tr td:nth-child(6):before {
-    content: "";
+    content: "توضیحات";
   }
 
   .patient-bills-bill table tbody tr td:nth-child(2):before,
@@ -812,17 +806,19 @@ input[type="number"] {
 
   .column4,
   .column5,
-  .column6 {
+  .column6,
+  .column7 {
     text-align: center;
   }
 
-  .column6 {
+  .column7 {
     /* width: 120px; */
   }
 
   .column4,
   .column5,
   .column6,
+  .column7,
   .column1,
   .column2,
   .column3 {
@@ -845,7 +841,7 @@ input[type="number"] {
   .form-details {
     flex-direction: column;
   }
-  .column6 {
+  .column7 {
     flex-direction: column;
     align-items: center;
   }
