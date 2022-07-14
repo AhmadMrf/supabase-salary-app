@@ -28,7 +28,7 @@
           <div class="top-bar-content">
             <div id="login-content" data-form="nurse" class="form-details">
               <!-- 
-              <form data-type="ورود" class=" hidden" action="#">
+              <form data-type="ورود" class="hidden" action="#">
                 <div class="info">
                   <input type="email" name="email" placeholder="ایمیل" />
                   <input type="password" name="password" placeholder="رمز ورود" />
@@ -37,6 +37,9 @@
                 <a href="#">فراموشی رمز عبور </a>
               </form>
 
+              ----------- or ------------
+              
+              
               <form  data-type="ثبت نام" action="#">
                 <div class="info">
                   <input type="email" name="email" placeholder="ایمیل" />
@@ -45,8 +48,12 @@
                   <input type="text" name="job" placeholder="سمت و شغل" />
                 </div>
                 <button type="button" href="#"> ثبت نام</button>
-              </form> -->
-              <!-- <div class="panel-account">
+              </form>
+
+              ----------- or ------------
+              
+              <div class="panel-account">
+                <img src="user-pic" />
                 <div class="panel-info">
                   <span>علی باقری</span>
                   <span>پرستار</span>
@@ -70,25 +77,15 @@
                   <input type="text" name="name" placeholder="آدرس" />
                 </div>
                 <button type="button" href="#">افزودن بیمار جدید</button>
-              </form> -->
-              <!-- <span>ابتدا وارد حساب کاربری خود شوید</span> -->
+              </form>
+
+              -----  or  -----
+
+              <span>ابتدا وارد حساب کاربری خود شوید</span> -->
             </div>
 
             <div data-form="more" class="form-details">
-              <!-- <form action="#">
-                <div class="info">
-                  <input
-                    class="fname"
-                    type="text"
-                    name="name"
-                    placeholder="بیشتر"
-                  />
-                  <input type="text" name="name" placeholder="کد ملی" />
-                  <input type="text" name="name" placeholder="شماره تماس" />
-                  <input type="text" name="name" placeholder="آدرس" />
-                </div>
-                <button type="button" href="#">افزودن</button>
-              </form> -->
+              <!-- will add hear User Data and forms for manage that -->
               <span>به زودی در دسترس قرار میگیرد</span>
             </div>
           </div>
@@ -108,9 +105,19 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- <tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr> -->
-                <!-- <tr><td class="fake-td" colspan="6">در حال دریافت اطلاعات ...</td></tr> -->
-                <!-- <tr>
+                <!-- <tr><td class="fake-td" colspan="6">برای مشاهده اطلاعات وارد حساب کاربری خود شوید</td></tr>
+                  
+
+              ----------- or ------------
+              
+              
+                <tr><td class="fake-td" colspan="6">در حال دریافت اطلاعات ...</td></tr>
+
+
+              ----------- or ------------
+              
+              
+                <tr>
                   <td class="column1">1</td>
                   <td class="column2">احمد معروفی</td>
                   <td class="column3">0936565656</td>
@@ -158,29 +165,13 @@
               </thead>
               <tbody>
                 <!-- <tr>
-                  <td class="column1"></td>
-                  <td class="column2"><input type="date" /></td>
-                  <td class="column3"><input step="5" type="number" /></td>
-                  <td class="column4"><input step="5" type="number" /></td>
-                  <td class="column5"><input step="5" type="number" /></td>
+                  <td class="column1">1</td>
+                  <td class="column2"><input type="date" /> تاریخ</td>
+                  <td class="column3"><input step="5" type="number" />1500</td>
+                  <td class="column4"><input step="5" type="number" />500</td>
+                  <td class="column5"><input step="5" type="number" />400</td>
                   <td id="add-cost" class="column7"><button>افزودن</button></td>
                 </tr> -->
-                <!--  <tr>
-                 <td class="column1">1</td>
-                 <td class="column2">1/5/1401</td>
-                 <td class="column3">400</td>
-                 <td class="column4">50</td>
-                 <td class="column5">200</td>
-                 <td class="column7"><button>اصلاح</button></td>
-               </tr>
-               <tr>
-                 <td class="column1">1</td>
-                 <td class="column2">1/5/1401</td>
-                 <td class="column3">400</td>
-                 <td class="column4">50</td>
-                 <td class="column5">200</td>
-                 <td class="column7"><button>اصلاح</button></td>
-               </tr> -->
               </tbody>
             </table>
           </div>
@@ -188,13 +179,19 @@
         </div>
 
         <div class="delete-confirm hidden">
-          <!-- <div class="delete-confirm-content"> -->
-          <!-- <span id="delete-confirm-bill-text" class="hidden">آیا میخواهید این صورت حساب را حذف کنید ؟ </span> -->
-          <!-- <span id="delete-confirm-patient-text" class="hidden"
-              >آیا میخواهید بیمار
-              "<span id="deleted-patient-name">بیمار شماره یک </span>" را حذف کنید؟
-            </span> -->
-          <!-- </div>
+          <!-- <div class="delete-confirm-content">
+            <span> آیا میخواهید بیمار" <span>بیمار اول </span>" را حذف کنید؟ </span>
+          </div>
+          <div class="delete-confirm-btns">
+            <button id="delete-yes-btn">حذف</button>
+            <button class="confirm-no-btn">انصراف</button>
+          </div>
+
+          ------- or -------
+
+          <div class="delete-confirm-content">
+            <span>آیا میخواهید این صورت حساب را حذف کنید ؟ </span>
+          </div>
           <div class="delete-confirm-btns">
             <button id="delete-yes-btn">حذف</button>
             <button class="confirm-no-btn">انصراف</button>
@@ -202,30 +199,40 @@
         </div>
 
         <div class="edit-confirm hidden">
-          <!-- <div class="edit-confirm-content"> -->
-          <!-- <div id="edit-confirm-bill-text" class="edit-confirm-text hidden">
+          <!-- <div class="edit-confirm-content">
+            <div id="edit-confirm-patient-text" class="edit-confirm-text hidden">
               <form action="#">
-                <span>تاریخ :<input type="date" name="date" placeholder="" /></span>
-                <span>ویزیت :<input type="number" name="visit" placeholder="" /></span>
-                <span>مصرفی :<input type="number" name="equipment" placeholder="" /></span>
-                <span>دریافتی :<input type="number" name="income" placeholder="" /></span>
-                <span>توضیحات :<textarea placeholder="" name="desc" id="desc"></textarea></span>
+                <span>نام بیمار :<input class="fname" type="text" name="fullName" value="value  placeholder="" /></span>
+                <span>کد ملی :<input type="text" name="codeNum" value="value  placeholder="" /></span>
+                <span>شماره تماس :<input type="tel" name="telNum" value="value  placeholder="" /></span>
+                <span>آدرس :<input type="text" name="adderes" value="value  placeholder="" /></span>
               </form>
-            </div> -->
-          <!-- <div id="edit-confirm-patient-text" class="edit-confirm-text hidden">
-              <form action="#">
-                <span>نام بیمار :<input class="fname" type="text" name="fullName" placeholder="" /></span>
-                <span>کد ملی :<input type="text" name="codeNum" placeholder="" /></span>
-                <span>شماره تماس :<input type="tel" name="telNum" placeholder="" /></span>
-                <span>آدرس :<input type="text" name="adderes" placeholder="" /></span>
-              </form>
-            </div> -->
-          <!-- </div>
+            </div>
+          </div>
           <div class="edit-confirm-btns">
             <button id="edit-yes-btn">اصلاح</button>
             <button class="confirm-no-btn">انصراف</button>
-          </div> -->
+          </div>
+        
+        
+        --------- or  --------
+
+
+        <div class="edit-confirm-content">
+          <div id="edit-confirm-bill-text" class="edit-confirm-text hidden">
+            <form action="#">
+              <span>ویزیت :<input type="number" name="visit" value="value  placeholder="" /></span>
+              <span>مصرفی :<input type="number" name="equipment" value="value  placeholder="" /></span>
+              <span>دریافتی :<input type="number" name="income" value="value  placeholder="" /></span>
+              <span>توضیحات :<textarea placeholder="" name="desc" id="desc">value </textarea></span>
+            </form>
+          </div>
         </div>
+        <div class="edit-confirm-btns">
+          <button id="edit-yes-btn">اصلاح</button>
+          <button class="confirm-no-btn">انصراف</button>
+        </div>
+        --></div>
       </div>
     </div>
     <script type="module" src="./main.js"></script>

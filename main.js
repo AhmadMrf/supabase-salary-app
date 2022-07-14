@@ -102,19 +102,10 @@ async function signUpAccount() {
   fullName = signupForm.elements.fullName.value;
   job = signupForm.elements.job.value;
 
-  const { user, error } = await database.auth.signUp(
-    {
-      email,
-      password,
-    }
-    // },
-    // {
-    //   data: {
-    //     fullName,
-    //     job,
-    //   },
-    // }
-  );
+  const { user, error } = await database.auth.signUp({
+    email,
+    password,
+  });
   if (error) {
     errorManage(error);
     return null;
@@ -124,14 +115,6 @@ async function signUpAccount() {
     signinForm.reset();
     console.log(loggedInUser);
     return loggedInUser;
-
-    // let userData = await addUserDataToDb({ id: user.id, fullName, job });
-    // signupForm.reset();
-    // console.log(userData);
-    // let {
-    //   data: [{ fullName: userFullName, job: userJob }],
-    // } = userData;
-    // return { ...user, userFullName, userJob };
   }
 }
 
@@ -187,7 +170,7 @@ async function changeSignState(state, clickedBtn) {
 }
 
 async function getUserFromDb() {
-  let { data, error } = await database.from("us");
+  let { data, error } = await database.from("users");
   if (error) {
     errorManage(error);
     return null;
@@ -199,14 +182,11 @@ async function getUserFromDb() {
 async function addUserDataToDb(userData) {
   // let { id, fullName, job, telNum, introducer } = userData;
   console.log("adduser");
-  let { data } = await database.from("us").insert([userData]);
+  let { data } = await database.from("users").insert([userData]);
   return data;
   // if (error) errorManage(error);
 }
-// document.body.addEventListener("click", async () => {
-//   let a = await addUserDataToDb({ id: loggedInUser.id, fullName: "new", job: "new", tellNum: 123 });
-//   console.log(a);
-// });
+
 //if success return data form database
 //if error return null and call errorManage func
 async function getPatientsFromDb() {
@@ -828,7 +808,7 @@ async function setupApp(loggedInUser) {
   console.log("patients", patients);
 
   setLabelLoginTab(loggedInUser);
-
+  document.title = loggedInUser ? `Salary App - ${loggedInUser.userData.fullName}` : "Salary App";
   setLoginTabContent(loggedInUser, patients);
 
   setAddPatientTabContent(loggedInUser);
